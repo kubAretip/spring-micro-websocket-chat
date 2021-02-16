@@ -26,6 +26,7 @@
 
         <module>config-server</module>
         <module>config-store</module>
+        <module>eureka-server</module>
     </modules>
 
     <build>
