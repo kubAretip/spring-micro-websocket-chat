@@ -1,0 +1,14 @@
+encrypt:
+  key: ${CONFIG_SERVER_SECRET}
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${GIT_URI}
+          search-paths:
+            - 'config-store/files'
+            - 'config-store/files/service/commons'
+            - 'config-store/files/service/*-service'
+          default-label: ${GIT_BRANCH}
