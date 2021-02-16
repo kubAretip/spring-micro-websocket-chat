@@ -27,6 +27,7 @@
         <module>config-store</module>
         <module>eureka-server</module>
         <module>zuul-server</module>
+        <module>user-service</module>
     </modules>
 
     <build>
