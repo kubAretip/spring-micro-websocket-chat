@@ -20,7 +20,10 @@ eureka:
 zuul:
   prefix: /api
   sensitive-headers: Cookie, Set-Cookie
-
+  routes:
+    auth-service:
+      path: /auth-service/**
+      serviceId: auth
 logging:
   level:
     com.netflix.hystrix: DEBUG

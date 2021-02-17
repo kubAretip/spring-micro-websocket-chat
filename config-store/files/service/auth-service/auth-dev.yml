@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth_service?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: '{cipher}f8d8d9c0d96186d920c267e82470d7c32cf1b13ecad36740d137692d73e215fc5ff2e9a48fc7d0c97d3b15aac9b6aecb'
+    password: '{cipher}1a267bf1e674c4e3792b3cca9e0652b90235b2d679259584025d3a09fe8144585736fa74f039b9556fa55c9fd4ac5c4a'
+  jpa:
+    hibernate:
+      ddl-auto: validate

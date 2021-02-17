@@ -1,0 +1,16 @@
+server:
+  port: 0
+  address: 127.0.0.1
+eureka:
+  instance:
+    instance-id: ${spring.application.name}-${random.int}
+    hostname: localhost
+    ip-address: 127.0.0.1
+    prefer-ip-address: false
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://${eureka.host:localhost}:${eureka.port:8761}/eureka
+    healthcheck:
+      enabled: true

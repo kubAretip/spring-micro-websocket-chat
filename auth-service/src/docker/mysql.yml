@@ -1,0 +1,20 @@
+version: '3.8'
+
+volumes:
+  db_data:
+    name: auth_service_vol
+    driver: local
+
+services:
+  mysql:
+    container_name: auth_service_mysql
+    image: library/mysql:8.0.22
+    environment:
+      - MYSQL_DATABASE=auth_service
+      - MYSQL_USER=authservice
+      - MYSQL_PASSWORD=authservice
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3306:3306
+    volumes:
+      - db_data:/var/lib/mysql
