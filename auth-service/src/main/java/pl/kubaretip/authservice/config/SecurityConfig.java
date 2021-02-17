@@ -11,7 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.kubaretip.authservice.security.AuthenticationFailureHandler;
 import pl.kubaretip.authservice.security.AuthenticationSuccessHandler;
 import pl.kubaretip.authservice.security.JWTAuthenticationFilter;
-import pl.kubaretip.authservice.security.JWTUtils;
+import pl.kubaretip.authservice.security.JWTBuilder;
+import pl.kubaretip.authutils.JWTConfig;
+
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -38,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JWTAuthenticationFilter authenticationFilter() throws Exception {
         var filter = new JWTAuthenticationFilter();
-        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwtUtils()));
+        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwtBuilder()));
         filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler());
         filter.setAuthenticationManager(super.authenticationManager());
         filter.setFilterProcessesUrl(jwtConfig().getAuthEndpoint());
@@ -52,8 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JWTUtils jwtUtils() {
-        return new JWTUtils(jwtConfig());
+    public JWTBuilder jwtBuilder() {
+        return new JWTBuilder(jwtConfig());
     }
 
     @Bean

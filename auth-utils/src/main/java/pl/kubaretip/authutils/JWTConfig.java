@@ -1,4 +1,4 @@
-package pl.kubaretip.authservice.config;
+package pl.kubaretip.authutils;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

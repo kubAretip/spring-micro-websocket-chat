@@ -1,13 +1,11 @@
-package pl.kubaretip.authservice.security;
+package pl.kubaretip.authutils;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.kubaretip.authservice.domain.AuthUser;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SecurityUserDetails implements UserDetails {
 
@@ -17,14 +15,12 @@ public class SecurityUserDetails implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean enabled;
 
-    public SecurityUserDetails(AuthUser authUser) {
-        this.password = authUser.getPassword();
-        this.id = authUser.getId();
-        this.username = authUser.getUsername();
-        this.authorities = authUser.getAuthorities()
-                .stream().map(authority -> new SimpleGrantedAuthority(authority.getName()))
-                .collect(Collectors.toList());
-        this.enabled = authUser.getEnabled();
+    public SecurityUserDetails(Long id, String username, String password, List<SimpleGrantedAuthority> authorities) {
+        this.username = username;
+        this.password = password;
+        this.id = id;
+        this.authorities = authorities;
+        this.enabled = true;
     }
 
     @Override

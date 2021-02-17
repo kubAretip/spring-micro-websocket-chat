@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 import pl.kubaretip.authservice.security.model.TokenResponse;
 
 import javax.servlet.ServletException;
@@ -12,12 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+@Component
 public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final JWTUtils jwtUtils;
+    private final JWTBuilder jwtBuilder;
 
-    public AuthenticationSuccessHandler(JWTUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
+    public AuthenticationSuccessHandler(JWTBuilder jwtBuilder) {
+        this.jwtBuilder = jwtBuilder;
     }
 
     @Override
@@ -25,10 +27,9 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
         var out = response.getWriter();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        var token = jwtUtils.buildToken(authentication);
+        var token = jwtBuilder.buildToken(authentication);
         var tokenJson = new ObjectMapper().writeValueAsString(new TokenResponse(token));
         out.print(tokenJson);
         out.flush();
-
     }
 }
