@@ -28,6 +28,7 @@
         <java-jwt.version>3.12.0</java-jwt.version>
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
         <flyway-core.version>6.5.7</flyway-core.version>
+        <problem-spring-web.version>0.26.2</problem-spring-web.version>
     </properties>
 
     <modules>
@@ -38,6 +39,7 @@
         <module>user-service</module>
         <module>auth-service</module>
         <module>auth-utils</module>
+        <module>dto-models</module>
     </modules>
 
     <dependencies>

@@ -1,6 +1,7 @@
 package pl.kubaretip.userservice.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .addFilter(new JWTFilter(super.authenticationManager(), jwtUtils()))
                 .authorizeRequests()
+                .mvcMatchers(HttpMethod.POST,"/users/register").permitAll()
                 .anyRequest()
                 .authenticated();
 
