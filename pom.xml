@@ -40,6 +40,7 @@
         <module>auth-service</module>
         <module>auth-utils</module>
         <module>dto-models</module>
+        <module>mail-service</module>
     </modules>
 
     <dependencies>
