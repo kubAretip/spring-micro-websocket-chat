@@ -8,8 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.kubaretip.authutils.JWTConfig;
+import pl.kubaretip.authutils.JWTFilter;
 import pl.kubaretip.zuulserver.security.CustomAuthenticationEntryPoint;
-import pl.kubaretip.zuulserver.security.JWTAuthorizationFilter;
 import pl.kubaretip.authutils.JWTUtils;
 
 @EnableWebSecurity
@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest()
             .authenticated()
         .and()
-            .addFilterAfter(new JWTAuthorizationFilter(jwtUtils()), UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new JWTFilter(jwtUtils()), UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling()
             .authenticationEntryPoint(authenticationEntryPoint())
         .and()

@@ -6,7 +6,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import pl.kubaretip.authutils.JWTConfig;
+import pl.kubaretip.authutils.JWTFilter;
 import pl.kubaretip.authutils.JWTUtils;
 
 @EnableWebSecurity
@@ -26,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .httpBasic()
                 .disable()
-                .addFilter(new JWTFilter(super.authenticationManager(), jwtUtils()))
+                .addFilterAfter(new JWTFilter(jwtUtils()), BasicAuthenticationFilter.class)
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.POST,"/users/register").permitAll()
                 .anyRequest()
