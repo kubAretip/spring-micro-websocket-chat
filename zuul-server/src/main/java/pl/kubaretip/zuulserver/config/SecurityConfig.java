@@ -29,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
             .authorizeRequests()
             .mvcMatchers(HttpMethod.POST, "/api/auth-service" + jwtConfig().getAuthEndpoint()).permitAll()
+            .mvcMatchers(HttpMethod.POST,"/api/user-service/users/register").permitAll()
             .anyRequest()
             .authenticated()
         .and()

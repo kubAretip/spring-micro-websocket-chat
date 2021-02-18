@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "auth_user")
+@Table(name = "auth_user", schema = "auth_service")
 @Entity
 public class AuthUser {
 
@@ -27,6 +27,9 @@ public class AuthUser {
     @Column(name = "password_hash", nullable = false, length = 60)
     private String password;
 
+    @Column(name = "activation_key", length = 124, unique = true)
+    private String activationKey;
+
     @Column(nullable = false)
     private Boolean enabled = false;
 
@@ -40,4 +43,14 @@ public class AuthUser {
     private Set<Authority> authorities = new HashSet<>();
 
 
+    @Override
+    public String toString() {
+        return "AuthUser{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", activationKey='" + activationKey + '\'' +
+                ", enabled=" + enabled +
+                ", authorities=" + authorities +
+                '}';
+    }
 }

@@ -1,11 +1,11 @@
 package pl.kubaretip.authservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import pl.kubaretip.authservice.utils.Error;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,12 +22,13 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         var out = response.getWriter();
 
-        var errorBuilder = Error.builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .title("Unauthorized")
-                .detail(exception.getLocalizedMessage());
+        Problem problem = Problem.builder()
+                .withStatus(Status.UNAUTHORIZED)
+                .withDetail(exception.getLocalizedMessage())
+                .withTitle(Status.UNAUTHORIZED.getReasonPhrase())
+                .build();
 
-        var jsonErrorResponse = new ObjectMapper().writeValueAsString(errorBuilder.build());
+        var jsonErrorResponse = new ObjectMapper().writeValueAsString(problem);
         out.print(jsonErrorResponse);
         out.flush();
     }

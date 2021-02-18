@@ -1,6 +1,7 @@
 package pl.kubaretip.authservice.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import pl.kubaretip.authservice.security.AuthenticationFailureHandler;
 import pl.kubaretip.authservice.security.AuthenticationSuccessHandler;
 import pl.kubaretip.authservice.security.JWTAuthenticationFilter;
@@ -16,7 +18,14 @@ import pl.kubaretip.authutils.JWTConfig;
 
 
 @EnableWebSecurity
+@Import(SecurityProblemSupport.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final SecurityProblemSupport problemSupport;
+
+    public SecurityConfig(SecurityProblemSupport problemSupport) {
+        this.problemSupport = problemSupport;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,9 +39,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
+            .httpBasic()
+            .disable()
             .authorizeRequests()
             .mvcMatchers(HttpMethod.POST, jwtConfig().getAuthEndpoint()).permitAll()
-            .anyRequest().authenticated();
+            .mvcMatchers(HttpMethod.POST,"/auth-users").permitAll()
+            .anyRequest().authenticated()
+        .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(problemSupport)
+            .accessDeniedHandler(problemSupport);
 
         // @formatter:on
     }
