@@ -1,4 +1,4 @@
-package pl.kubaretip.userservice.dto;
+package pl.kubaretip.dtomodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

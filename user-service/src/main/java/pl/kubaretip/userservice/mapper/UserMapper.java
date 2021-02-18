@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 
 import org.mapstruct.Mapping;
 import pl.kubaretip.userservice.domain.User;
-import pl.kubaretip.userservice.dto.UserDTO;
+import pl.kubaretip.dtomodels.UserDTO;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.userservice.cilent.AuthUserClient;
 import pl.kubaretip.userservice.domain.User;
-import pl.kubaretip.userservice.dto.UserDTO;
+import pl.kubaretip.dtomodels.UserDTO;
 import pl.kubaretip.userservice.exception.AlreadyExistsException;
 import pl.kubaretip.userservice.repository.UserRepository;
 import pl.kubaretip.userservice.service.UserService;
