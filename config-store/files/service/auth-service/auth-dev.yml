@@ -6,3 +6,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+
+logging:
+  level:
+    pl:
+      kubaretip:
+        authservice: debug
+
+server:
+  port: 9999
