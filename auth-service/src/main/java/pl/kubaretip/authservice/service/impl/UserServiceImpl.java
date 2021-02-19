@@ -1,5 +1,6 @@
 package pl.kubaretip.authservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.kubaretip.authservice.constants.AuthorityConstants;
 import pl.kubaretip.authservice.domain.Authority;
 import pl.kubaretip.authservice.domain.User;
+import pl.kubaretip.authservice.exception.InvalidDataException;
 import pl.kubaretip.authservice.exception.UserAlreadyExistsException;
 import pl.kubaretip.authservice.repository.AuthorityRepository;
 import pl.kubaretip.authservice.repository.UserRepository;
@@ -14,6 +16,7 @@ import pl.kubaretip.authservice.service.UserService;
 
 import java.util.HashSet;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -57,4 +60,19 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public void activateUser(String activationKey) {
+
+        if (!StringUtils.isNotBlank(activationKey))
+            throw new InvalidDataException("Invalid activation key");
+
+        userRepository.findOneByActivationKey(activationKey)
+                .ifPresent(user -> {
+                    log.debug("Activation user with id {} with key {}", user.getId(), activationKey);
+                    user.setEnabled(true);
+                    user.setActivationKey(null);
+                    userRepository.save(user);
+
+                });
+    }
 }

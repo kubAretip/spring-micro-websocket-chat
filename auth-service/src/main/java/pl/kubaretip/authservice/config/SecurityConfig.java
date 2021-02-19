@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .mvcMatchers(HttpMethod.POST, jwtConfig().getAuthEndpoint()).permitAll()
             .mvcMatchers(HttpMethod.POST,"/users").permitAll()
+            .mvcMatchers(HttpMethod.PATCH,"/users/activate").permitAll()
             .anyRequest().authenticated()
         .and()
             .exceptionHandling()

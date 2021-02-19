@@ -56,7 +56,7 @@ public class MailServiceImpl implements SendMailService {
         if (userEmail != null) {
             log.debug("Sending email template to {}", userEmail);
 
-            var activationLink = baseMailProcessingUrl + "?data=" + user.getActivationKey();
+            var activationLink = baseMailProcessingUrl + "/auth-service/users/activate?data=" + user.getActivationKey();
             var context = new Context();
             context.setVariable("user", user);
             context.setVariable("activationUrl", activationLink);
