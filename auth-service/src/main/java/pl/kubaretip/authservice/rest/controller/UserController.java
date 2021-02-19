@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.authservice.mapper.UserMapper;
+import pl.kubaretip.authservice.service.UserActivationMessagingService;
 import pl.kubaretip.authservice.service.UserService;
 import pl.kubaretip.dtomodels.UserDTO;
 
@@ -21,11 +22,14 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
+    private final UserActivationMessagingService userActivationMessagingService;
 
     public UserController(UserService userService,
-                          UserMapper userMapper) {
+                          UserMapper userMapper,
+                          UserActivationMessagingService userActivationMessagingService) {
         this.userService = userService;
         this.userMapper = userMapper;
+        this.userActivationMessagingService = userActivationMessagingService;
     }
 
     @PostMapping
@@ -33,6 +37,7 @@ public class UserController {
                                                      UriComponentsBuilder uriComponentsBuilder) {
         var user = userService.createUser(userDTO.getUsername(), userDTO.getPassword(),
                 userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
+        userActivationMessagingService.sendActivationMail(userMapper.mapToUserDTO(user));
         var userDTOResponse = userMapper.mapToUserDTOWithoutActivationKey(user);
         var location = uriComponentsBuilder.path("/users/{id}")
                 .buildAndExpand(userDTOResponse.getId()).toUri();
