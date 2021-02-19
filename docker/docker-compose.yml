@@ -4,9 +4,6 @@ volumes:
   mysql_auth:
     name: auth_service_vol
     driver: local
-  mysql_user:
-    name: user_service_vol
-    driver: local
   mongo_chat:
     name: chat_service_vol
     driver: local
@@ -27,18 +24,6 @@ services:
       - 3306:3306
     volumes:
       - mysql_auth:/var/lib/mysql
-  user_db:
-    container_name: user_service_mysql
-    image: library/mysql:8.0.22
-    environment:
-      MYSQL_DATABASE: user_service_database
-      MYSQL_USER: ${USER_SERVICE_MYSQL_USER}
-      MYSQL_PASSWORD: ${USER_SERVICE_MYSQL_PASS}
-      MYSQL_ROOT_PASSWORD: ${USER_SERVICE_MYSQL_ROOT_PASS}
-    ports:
-      - 3307:3306
-    volumes:
-      - mysql_user:/var/lib/mysql
   chat_db:
     container_name: chat_service_mongo
     image: library/mongo:latest
