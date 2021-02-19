@@ -1,0 +1,20 @@
+spring:
+  mail:
+    host: ${MAIL_SMTP_HOST}
+    port: ${MAIL_SMTP_PORT}
+    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  task:
+    execution:
+      thread-name-prefix: mail-service-task-
+      pool:
+        core-size: 2
+        max-size: 25
+        queue-capacity: 10000

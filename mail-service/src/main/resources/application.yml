@@ -1,22 +1,3 @@
 spring:
   application:
     name: mail
-  mail:
-    host: smtp.ethereal.email
-    port: 587
-    password: ${ETHEREAL_PASSWORD}
-    username: ${ETHEREAL_USERNAME}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-  task:
-    execution:
-      thread-name-prefix: mail-service-task-
-      pool:
-        core-size: 2
-        max-size: 25
-        queue-capacity: 10000

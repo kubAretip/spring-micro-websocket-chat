@@ -1,0 +1,13 @@
+spring:
+  mail:
+    host: 127.0.0.1
+    port: 1025
+  task:
+    execution:
+      thread-name-prefix: mail-service-task-
+      pool:
+        core-size: 2
+        max-size: 25
+        queue-capacity: 10000
+server:
+  port: 9998
