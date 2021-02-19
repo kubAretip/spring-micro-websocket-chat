@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3307/user_service?createDatabaseIfNotExist=true&serverTimezone=UTC
-    username: '{cipher}601013fed9943a670115c00b51e50faf1b09f23cbe94a72eaab9d4a559320570'
-    password: '{cipher}1b65f200e4cd8eb34cd0b2a0447e84238b63a5b30220e46720d59976d9af0f46'
+    url: jdbc:mysql://localhost:3307/user_service_database?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: user-service-user
+    password: '{cipher}a652ce1c1c31ee4bd4c3a225c2d56f50aaea9ec830643a6e2fe7bddaef2720d88ce9e7e70e4da656423928a18012c39f'
   jpa:
     hibernate:
       ddl-auto: validate

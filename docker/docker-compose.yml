@@ -7,16 +7,22 @@ volumes:
   mysql_user:
     name: user_service_vol
     driver: local
+  mongo_chat:
+    name: chat_service_vol
+    driver: local
+  rabbitmq:
+    name: rabbitmq_vol
+    driver: local
 
 services:
   auth_db:
     container_name: auth_service_mysql
     image: library/mysql:8.0.22
     environment:
-      - MYSQL_DATABASE=auth_service
-      - MYSQL_USER=authservice
-      - MYSQL_PASSWORD=authservice
-      - MYSQL_ROOT_PASSWORD=root
+      MYSQL_DATABASE: auth_service_database
+      MYSQL_USER: ${AUTH_SERVICE_MYSQL_USER}
+      MYSQL_PASSWORD: ${AUTH_SERVICE_MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${AUTH_SERVICE_MYSQL_ROOT_PASS}
     ports:
       - 3306:3306
     volumes:
@@ -25,11 +31,42 @@ services:
     container_name: user_service_mysql
     image: library/mysql:8.0.22
     environment:
-      - MYSQL_DATABASE=user_service
-      - MYSQL_USER=userservice
-      - MYSQL_PASSWORD=userservice
-      - MYSQL_ROOT_PASSWORD=root
+      MYSQL_DATABASE: user_service_database
+      MYSQL_USER: ${USER_SERVICE_MYSQL_USER}
+      MYSQL_PASSWORD: ${USER_SERVICE_MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${USER_SERVICE_MYSQL_ROOT_PASS}
     ports:
       - 3307:3306
     volumes:
       - mysql_user:/var/lib/mysql
+  chat_db:
+    container_name: chat_service_mongo
+    image: library/mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: chat_service_database
+      MONGO_INITDB_ROOT_USERNAME: ${CHAT_SERVICE_MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${CHAT_SERVICE_MONGO_PASS}
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_chat:/var/lib/mongo
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq:/etc/rabbitmq/
+      - rabbitmq:/var/lib/rabbitmq/
+      - rabbitmq:/var/log/rabbitmq/
+  # Mail catcher for local debugging
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - 1025:1025 # smtp port
+      - 8025:8025 # web ui port
