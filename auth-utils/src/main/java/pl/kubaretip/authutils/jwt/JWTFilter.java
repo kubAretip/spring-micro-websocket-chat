@@ -1,4 +1,4 @@
-package pl.kubaretip.authutils;
+package pl.kubaretip.authutils.jwt;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;

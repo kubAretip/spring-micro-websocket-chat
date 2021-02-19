@@ -7,10 +7,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.kubaretip.authutils.JWTConfig;
-import pl.kubaretip.authutils.JWTFilter;
+import pl.kubaretip.authutils.jwt.JWTConfig;
+import pl.kubaretip.authutils.jwt.JWTFilter;
 import pl.kubaretip.zuulserver.security.CustomAuthenticationEntryPoint;
-import pl.kubaretip.authutils.JWTUtils;
+import pl.kubaretip.authutils.jwt.JWTUtils;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
             .authorizeRequests()
             .mvcMatchers(HttpMethod.POST, "/api/auth-service" + jwtConfig().getAuthEndpoint()).permitAll()
-            .mvcMatchers(HttpMethod.POST,"/api/user-service/users/register").permitAll()
+            .mvcMatchers(HttpMethod.POST,"/api/auth-service/users").permitAll()
             .anyRequest()
             .authenticated()
         .and()

@@ -4,14 +4,15 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import pl.kubaretip.authutils.JWTConfig;
+import pl.kubaretip.authutils.jwt.JWTConfig;
+import pl.kubaretip.authutils.security.SecurityUserDetailsImpl;
 
 
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import static pl.kubaretip.authutils.JWTConstants.AUTHORITIES_KEY;
-import static pl.kubaretip.authutils.JWTConstants.SUB_ID_KEY;
+import static pl.kubaretip.authutils.jwt.JWTConstants.AUTHORITIES_KEY;
+import static pl.kubaretip.authutils.jwt.JWTConstants.SUB_ID_KEY;
 
 public class JWTBuilder {
 
@@ -24,7 +25,7 @@ public class JWTBuilder {
     }
 
     public String buildToken(Authentication authentication) {
-        var user = (SecurityUserDetails) authentication.getPrincipal();
+        var user = (SecurityUserDetailsImpl) authentication.getPrincipal();
         var authorities = user.getAuthorities()
                 .stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         var expiresAt = new Date(System.currentTimeMillis() + this.tokenValidityTimeInMilliseconds);

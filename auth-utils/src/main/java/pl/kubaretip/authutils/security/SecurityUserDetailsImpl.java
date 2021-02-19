@@ -1,21 +1,28 @@
-package pl.kubaretip.authutils;
+package pl.kubaretip.authutils.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
-public class SecurityUserDetails implements UserDetails {
+public class SecurityUserDetailsImpl implements SecurityUserDetails {
 
     private final String username;
     private final String password;
-    private final Long id;
+    private final String id;
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean enabled;
 
-    public SecurityUserDetails(Long id, String username, String password, List<SimpleGrantedAuthority> authorities) {
+    public SecurityUserDetailsImpl(String id, String username, String password, boolean enabled, List<SimpleGrantedAuthority> authorities) {
+        this.username = username;
+        this.password = password;
+        this.id = id;
+        this.authorities = authorities;
+        this.enabled = enabled;
+    }
+
+    public SecurityUserDetailsImpl(String id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.username = username;
         this.password = password;
         this.id = id;
@@ -58,7 +65,8 @@ public class SecurityUserDetails implements UserDetails {
         return this.enabled;
     }
 
-    public Long getId() {
+    @Override
+    public String getId() {
         return id;
     }
 }

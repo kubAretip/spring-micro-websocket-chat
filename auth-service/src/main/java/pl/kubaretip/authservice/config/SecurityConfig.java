@@ -14,7 +14,7 @@ import pl.kubaretip.authservice.security.AuthenticationFailureHandler;
 import pl.kubaretip.authservice.security.AuthenticationSuccessHandler;
 import pl.kubaretip.authservice.security.JWTAuthenticationFilter;
 import pl.kubaretip.authservice.security.JWTBuilder;
-import pl.kubaretip.authutils.JWTConfig;
+import pl.kubaretip.authutils.jwt.JWTConfig;
 
 
 @EnableWebSecurity
@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .disable()
             .authorizeRequests()
             .mvcMatchers(HttpMethod.POST, jwtConfig().getAuthEndpoint()).permitAll()
-            .mvcMatchers(HttpMethod.POST,"/auth-users").permitAll()
+            .mvcMatchers(HttpMethod.POST,"/users").permitAll()
             .anyRequest().authenticated()
         .and()
             .exceptionHandling()

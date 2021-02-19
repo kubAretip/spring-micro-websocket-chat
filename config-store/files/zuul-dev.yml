@@ -24,9 +24,7 @@ zuul:
     auth-service:
       path: /auth-service/**
       serviceId: auth
-    user-service:
-      path: /user-service/**
-      serviceId: user
+
 logging:
   level:
     com.netflix.hystrix: DEBUG

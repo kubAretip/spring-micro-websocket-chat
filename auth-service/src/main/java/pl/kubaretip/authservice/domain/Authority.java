@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 @ToString
 @Entity
-@Table(schema = "auth_service")
+@Table(schema = "auth_service_database")
 @Getter
 @Setter
 @NoArgsConstructor

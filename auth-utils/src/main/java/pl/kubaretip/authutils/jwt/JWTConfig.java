@@ -1,4 +1,4 @@
-package pl.kubaretip.authutils;
+package pl.kubaretip.authutils.jwt;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

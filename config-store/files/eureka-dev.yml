@@ -1,6 +1,6 @@
 eureka:
   datacenter: Poland
-  environment: production
+  environment: development
   instance:
     hostname: localhost
     prefer-ip-address: true

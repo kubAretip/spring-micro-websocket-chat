@@ -5,14 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 public class UserDTO {
 
-    private Long id = null;
+    private String id;
 
     @NotBlank
     @Size(min = 4, max = 50)
@@ -36,7 +39,6 @@ public class UserDTO {
     @NotBlank
     private String email;
 
-
-    private String friendRequestCode;
+    private String activationKey;
 
 }

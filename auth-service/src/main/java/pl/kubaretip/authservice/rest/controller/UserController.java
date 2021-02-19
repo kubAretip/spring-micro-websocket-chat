@@ -1,15 +1,16 @@
-package pl.kubaretip.userservice.rest.controller;
+package pl.kubaretip.authservice.rest.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.kubaretip.authservice.mapper.UserMapper;
+import pl.kubaretip.authservice.service.UserService;
 import pl.kubaretip.dtomodels.UserDTO;
-import pl.kubaretip.userservice.mapper.UserMapper;
-import pl.kubaretip.userservice.service.UserService;
 
 import javax.validation.Valid;
 
@@ -27,13 +28,15 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserDTO userDTO,
-                                                UriComponentsBuilder uriComponentsBuilder) {
-        var user = userService.createUser(userDTO);
+    @PostMapping
+    public ResponseEntity<UserDTO> createNewAuthUser(@Valid @RequestBody UserDTO userDTO,
+                                                     UriComponentsBuilder uriComponentsBuilder) {
+        var user = userService.createUser(userDTO.getUsername(), userDTO.getPassword(),
+                userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
+        var userDTOResponse = userMapper.mapToUserDTO(user);
         var location = uriComponentsBuilder.path("/users/{id}")
-                .buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(location).body(userMapper.mapToUserDTO(user));
+                .buildAndExpand(userDTOResponse.getId()).toUri();
+        return ResponseEntity.created(location).body(userDTOResponse);
     }
 
 

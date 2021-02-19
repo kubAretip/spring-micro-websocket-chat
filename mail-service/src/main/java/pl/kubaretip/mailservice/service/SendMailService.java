@@ -4,5 +4,5 @@ import pl.kubaretip.dtomodels.UserDTO;
 
 public interface SendMailService {
 
-    void sendActivationEmail(UserDTO user, String activationProcessingUrl);
+    void sendActivationEmail(UserDTO user);
 }

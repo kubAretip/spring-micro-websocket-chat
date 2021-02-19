@@ -1,6 +1,7 @@
 package pl.kubaretip.mailservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,6 +21,9 @@ public class MailServiceImpl implements SendMailService {
 
     private final JavaMailSender sender;
     private final TemplateEngine templateEngine;
+
+    @Value("${mail.baseUrl:none}")
+    private String baseMailProcessingUrl;
 
     public MailServiceImpl(JavaMailSender sender,
                            TemplateEngine templateEngine) {
@@ -46,15 +50,16 @@ public class MailServiceImpl implements SendMailService {
 
     @Async
     @Override
-    public void sendActivationEmail(UserDTO user, String activationProcessingUrl) {
+    public void sendActivationEmail(UserDTO user) {
 
         var userEmail = user.getEmail();
         if (userEmail != null) {
             log.debug("Sending email template to {}", userEmail);
 
+            var activationLink = baseMailProcessingUrl + "?data=" + user.getActivationKey();
             var context = new Context();
             context.setVariable("user", user);
-            context.setVariable("activationUrl", activationProcessingUrl);
+            context.setVariable("activationUrl", activationLink);
 
             var subject = "Activate your account";
             var content = templateEngine.process("mail/activationMail", context);

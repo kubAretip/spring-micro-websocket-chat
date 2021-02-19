@@ -1,4 +1,4 @@
-package pl.kubaretip.authutils;
+package pl.kubaretip.authutils.jwt;
 
 public final class JWTConstants {
 

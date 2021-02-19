@@ -36,7 +36,6 @@
         <module>config-store</module>
         <module>eureka-server</module>
         <module>zuul-server</module>
-        <module>user-service</module>
         <module>auth-service</module>
         <module>auth-utils</module>
         <module>dto-models</module>

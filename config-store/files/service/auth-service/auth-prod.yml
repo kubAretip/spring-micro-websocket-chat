@@ -1,8 +1,10 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/auth_service?createDatabaseIfNotExist=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/auth_service_database?createDatabaseIfNotExist=true&serverTimezone=UTC
     username: ${AUTH_SERVICE_DB_USERNAME}
     password: ${AUTH_SERVICE_DB_USERNAME}
   jpa:
     hibernate:
       ddl-auto: none
+server:
+  forward-headers-strategy: framework

@@ -11,3 +11,5 @@ spring:
         queue-capacity: 10000
 server:
   port: 9998
+mail:
+  baseUrl: http://localhost:8762/api
