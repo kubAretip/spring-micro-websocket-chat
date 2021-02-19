@@ -33,7 +33,7 @@ public class UserController {
                                                      UriComponentsBuilder uriComponentsBuilder) {
         var user = userService.createUser(userDTO.getUsername(), userDTO.getPassword(),
                 userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
-        var userDTOResponse = userMapper.mapToUserDTO(user);
+        var userDTOResponse = userMapper.mapToUserDTOWithoutActivationKey(user);
         var location = uriComponentsBuilder.path("/users/{id}")
                 .buildAndExpand(userDTOResponse.getId()).toUri();
         return ResponseEntity.created(location).body(userDTOResponse);
