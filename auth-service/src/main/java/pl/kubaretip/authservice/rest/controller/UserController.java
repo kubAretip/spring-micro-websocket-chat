@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.authservice.mapper.UserMapper;
-import pl.kubaretip.authservice.service.UserActivationMessagingService;
+import pl.kubaretip.authservice.messaging.sender.UserSender;
 import pl.kubaretip.authservice.service.UserService;
 import pl.kubaretip.dtomodels.UserDTO;
 
@@ -19,14 +19,14 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
-    private final UserActivationMessagingService userActivationMessagingService;
+    private final UserSender userSender;
 
     public UserController(UserService userService,
                           UserMapper userMapper,
-                          UserActivationMessagingService userActivationMessagingService) {
+                          UserSender userSender) {
         this.userService = userService;
         this.userMapper = userMapper;
-        this.userActivationMessagingService = userActivationMessagingService;
+        this.userSender = userSender;
     }
 
     @PostMapping
@@ -34,11 +34,12 @@ public class UserController {
                                                      UriComponentsBuilder uriComponentsBuilder) {
         var user = userService.createUser(userDTO.getUsername(), userDTO.getPassword(),
                 userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
-        userActivationMessagingService.sendActivationMail(userMapper.mapToUserDTO(user));
-        var userDTOResponse = userMapper.mapToUserDTOWithoutActivationKey(user);
+
+        userSender.send(userMapper.mapToUserDTO(user));
+
         var location = uriComponentsBuilder.path("/users/{id}")
-                .buildAndExpand(userDTOResponse.getId()).toUri();
-        return ResponseEntity.created(location).body(userDTOResponse);
+                .buildAndExpand(user.getId()).toUri();
+        return ResponseEntity.created(location).body(userMapper.mapToUserDTOWithoutActivationKey(user));
     }
 
 
