@@ -40,6 +40,7 @@
         <module>auth-utils</module>
         <module>dto-models</module>
         <module>mail-service</module>
+        <module>chat-service</module>
     </modules>
 
     <dependencies>
