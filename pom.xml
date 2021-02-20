@@ -33,7 +33,6 @@
 
     <modules>
         <module>config-server</module>
-        <module>config-store</module>
         <module>eureka-server</module>
         <module>zuul-server</module>
         <module>auth-service</module>
