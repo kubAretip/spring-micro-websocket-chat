@@ -11,8 +11,7 @@ import pl.kubaretip.authutils.security.SecurityUserDetailsImpl;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import static pl.kubaretip.authutils.jwt.JWTConstants.AUTHORITIES_KEY;
-import static pl.kubaretip.authutils.jwt.JWTConstants.SUB_ID_KEY;
+import static pl.kubaretip.authutils.jwt.JWTConstants.*;
 
 public class JWTBuilder {
 
@@ -31,9 +30,9 @@ public class JWTBuilder {
         var expiresAt = new Date(System.currentTimeMillis() + this.tokenValidityTimeInMilliseconds);
 
         return JWT.create()
-                .withSubject(user.getUsername())
+                .withSubject(user.getId())
                 .withExpiresAt(expiresAt)
-                .withClaim(SUB_ID_KEY, user.getId())
+                .withClaim(USERNAME_KEY, user.getUsername())
                 .withClaim(AUTHORITIES_KEY, authorities)
                 .sign(sign);
     }

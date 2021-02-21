@@ -9,8 +9,7 @@ import pl.kubaretip.authutils.security.SecurityUserDetailsImpl;
 
 import java.util.stream.Collectors;
 
-import static pl.kubaretip.authutils.jwt.JWTConstants.AUTHORITIES_KEY;
-import static pl.kubaretip.authutils.jwt.JWTConstants.SUB_ID_KEY;
+import static pl.kubaretip.authutils.jwt.JWTConstants.*;
 
 public class JWTUtils {
 
@@ -42,8 +41,8 @@ public class JWTUtils {
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
-            var username = decodedJWT.getSubject();
-            var userId = decodedJWT.getClaim(SUB_ID_KEY).asString();
+            var userId = decodedJWT.getSubject();
+            var username = decodedJWT.getClaim(USERNAME_KEY).asString();
             var securityUser = new SecurityUserDetailsImpl(userId, username, "", authorities);
 
             return new UsernamePasswordAuthenticationToken(securityUser, token, authorities);
