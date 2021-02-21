@@ -34,24 +34,32 @@ public class FriendController {
     }
 
     @PatchMapping(path = "/{id}", params = {"accept"})
-    public ResponseEntity<Void> replyToFriendsRequest(@PathVariable("id") long friendId,
-                                                      @RequestParam("accept") boolean accept) {
-        friendService.replyToFriendsRequest(friendId, SecurityUtils.getCurrentUser(), accept);
+    public ResponseEntity<Void> replyToFriend(@PathVariable("id") long friendId,
+                                              @RequestParam("accept") boolean accept) {
+        friendService.replyToFriend(friendId, SecurityUtils.getCurrentUser(), accept);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFriendsRequestByIdWithSentStatus(@PathVariable("id") long friendId) {
-        friendService.deleteFriendsRequest(SecurityUtils.getCurrentUser(), friendId);
+    public ResponseEntity<Void> deleteFriendByIdAndSenderWithSentStatus(@PathVariable("id") long friendId) {
+        friendService.deleteFriendBySenderWithSentStatus(SecurityUtils.getCurrentUser(), friendId);
         return ResponseEntity.noContent().build();
     }
 
 
     @GetMapping
-    public ResponseEntity<List<FriendDTO>> getReceivedFriendWithSentStatus() {
+    public ResponseEntity<List<FriendDTO>> getRecipientFriendWithSentStatus() {
         var allRecipientFriendsWithSentStatus = friendService.getAllRecipientFriendsWithSentStatus(SecurityUtils.getCurrentUser());
         return ResponseEntity.ok()
                 .body(friendMapper.mapToFriendDTOListWithoutRecipient(allRecipientFriendsWithSentStatus));
+    }
+
+    @GetMapping(params = {"status"})
+    public ResponseEntity<List<FriendDTO>> getSenderFriendByStatus(@RequestParam("status") String status) {
+
+        var allSenderFriendsByStatus = friendService.getAllSenderFriendsByStatus(SecurityUtils.getCurrentUser(), status);
+        return ResponseEntity.ok()
+                .body(friendMapper.mapToFriendDTOListWithoutSender(allSenderFriendsByStatus));
     }
 
 }

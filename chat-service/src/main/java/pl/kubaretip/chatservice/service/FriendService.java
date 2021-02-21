@@ -7,9 +7,12 @@ import java.util.List;
 public interface FriendService {
     Friend createNewFriend(String senderUserId, String friendRequestCode);
 
-    void replyToFriendsRequest(long friendId, String currentUserId, boolean accept);
+    void replyToFriend(long friendId, String currentUserId, boolean accept);
 
-    void deleteFriendsRequest(String currentUserId, long friendId);
+    void deleteFriendBySenderWithSentStatus(String currentUserId, long friendId);
 
     List<Friend> getAllRecipientFriendsWithSentStatus(String currentUser);
+
+    List<Friend> getAllSenderFriendsByStatus(String senderUserId, String status);
+
 }

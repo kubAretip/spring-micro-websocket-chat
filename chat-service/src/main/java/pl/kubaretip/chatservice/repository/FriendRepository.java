@@ -20,4 +20,9 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("SELECT f FROM Friend f WHERE f.recipient.userId = :recipientId AND f.friendsRequestStatus = :friendStatus")
     List<Friend> findByRecipientAndFriendsRequestStatus(UUID recipientId, FriendStatus friendStatus);
 
+    @Query("SELECT f FROM Friend f WHERE f.sender.userId = :senderId AND f.friendsRequestStatus = :friendStatus")
+    List<Friend> findBySenderAndFriendsRequestStatus(UUID senderId, FriendStatus friendStatus);
+
+
+
 }

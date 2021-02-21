@@ -14,6 +14,7 @@ import pl.kubaretip.chatservice.repository.FriendRepository;
 import pl.kubaretip.chatservice.service.FriendService;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +53,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public void replyToFriendsRequest(long friendId, String currentUserId, boolean accept) {
+    public void replyToFriend(long friendId, String currentUserId, boolean accept) {
 
         var friend = friendRepository.findById(friendId)
                 .orElseThrow(() -> new NotFoundException("Friends request not found"));
@@ -76,7 +77,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public void deleteFriendsRequest(String currentUserId, long friendId) {
+    public void deleteFriendBySenderWithSentStatus(String currentUserId, long friendId) {
         friendRepository.findById(friendId)
                 .ifPresentOrElse(friend -> {
                     if (!friend.getSender().getUserId().equals(UUID.fromString(currentUserId))) {
@@ -98,5 +99,19 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public List<Friend> getAllRecipientFriendsWithSentStatus(String currentUser) {
         return friendRepository.findByRecipientAndFriendsRequestStatus(UUID.fromString(currentUser), FriendStatus.SENT);
+    }
+
+    @Override
+    public List<Friend> getAllSenderFriendsByStatus(String senderUserId, String status) {
+
+        if (status.equalsIgnoreCase(FriendStatus.SENT.name())) {
+            return friendRepository.findBySenderAndFriendsRequestStatus(UUID.fromString(senderUserId), FriendStatus.SENT);
+        }
+
+        if (status.equalsIgnoreCase(FriendStatus.ACCEPTED.name())) {
+            return friendRepository.findBySenderAndFriendsRequestStatus(UUID.fromString(senderUserId), FriendStatus.ACCEPTED);
+        }
+
+        return Collections.emptyList();
     }
 }

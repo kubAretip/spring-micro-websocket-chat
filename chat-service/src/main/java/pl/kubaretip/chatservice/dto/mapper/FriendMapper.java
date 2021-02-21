@@ -1,10 +1,7 @@
 package pl.kubaretip.chatservice.dto.mapper;
 
 import org.mapstruct.*;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
-import pl.kubaretip.chatservice.domain.ChatProfile;
 import pl.kubaretip.chatservice.domain.Friend;
-import pl.kubaretip.chatservice.dto.ChatProfileDTO;
 import pl.kubaretip.chatservice.dto.FriendDTO;
 import pl.kubaretip.chatservice.util.DateUtils;
 
@@ -26,8 +23,16 @@ public interface FriendMapper {
     @Mapping(target = "recipient", ignore = true)
     FriendDTO mapToFriendDTOWithoutRecipient(Friend friend);
 
+    @Named("mapWithoutSender")
+    @InheritConfiguration(name = "mapToFriendDTO")
+    @Mapping(target = "sender", ignore = true)
+    FriendDTO mapToFriendDTOWithoutSender(Friend friend);
+
     @IterableMapping(qualifiedByName = "mapWithoutRecipient")
     List<FriendDTO> mapToFriendDTOListWithoutRecipient(List<Friend> friends);
+
+    @IterableMapping(qualifiedByName = "mapWithoutSender")
+    List<FriendDTO> mapToFriendDTOListWithoutSender(List<Friend> friends);
 
 
     default String convertOffsetDateToString(OffsetDateTime time) {
