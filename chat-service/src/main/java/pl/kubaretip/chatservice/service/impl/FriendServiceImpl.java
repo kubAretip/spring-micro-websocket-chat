@@ -89,7 +89,7 @@ public class FriendServiceImpl implements FriendService {
                     friendRepository.delete(friend);
 
                 }, () -> {
-                    throw new InvalidDataException("Friends request not found");
+                    throw new NotFoundException("Friends request not found");
                 });
     }
 }
