@@ -6,4 +6,6 @@ public interface FriendService {
     Friend createNewFriend(String senderUserId, String friendRequestCode);
 
     void replyToFriendsRequest(long friendId, String currentUserId, boolean accept);
+
+    void deleteFriendsRequest(String currentUserId, long friendId);
 }

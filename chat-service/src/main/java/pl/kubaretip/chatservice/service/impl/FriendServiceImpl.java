@@ -66,21 +66,30 @@ public class FriendServiceImpl implements FriendService {
         }
 
 
-        if (accept)
-            acceptFriendsRequest(friend);
-        else
-            deleteFriendRequest(friend);
-
+        if (accept) {
+            friend.setFriendsRequestStatus(FriendStatus.ACCEPTED);
+            friendRepository.save(friend);
+        } else {
+            friendRepository.delete(friend);
+        }
     }
 
-    private void deleteFriendRequest(Friend friend) {
-        friendRepository.delete(friend);
+    @Override
+    public void deleteFriendsRequest(String currentUserId, long friendId) {
+        friendRepository.findById(friendId)
+                .ifPresentOrElse(friend -> {
+                    if (!friend.getSender().getUserId().equals(UUID.fromString(currentUserId))) {
+                        throw new InvalidDataException("You can not cancel friends request because you are not the owner");
+                    }
+
+                    if (!friend.getFriendsRequestStatus().equals(FriendStatus.SENT)) {
+                        throw new InvalidDataException("Friends request already accepted.");
+                    }
+
+                    friendRepository.delete(friend);
+
+                }, () -> {
+                    throw new InvalidDataException("Friends request not found");
+                });
     }
-
-    private void acceptFriendsRequest(Friend friend) {
-        friend.setFriendsRequestStatus(FriendStatus.ACCEPTED);
-        friendRepository.save(friend);
-    }
-
-
 }

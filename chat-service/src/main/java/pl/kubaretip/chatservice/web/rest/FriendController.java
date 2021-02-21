@@ -30,5 +30,11 @@ public class FriendController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSentFriendsRequestById(@PathVariable("id") long friendId) {
+        friendService.deleteFriendsRequest(SecurityUtils.getCurrentUser(), friendId);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
