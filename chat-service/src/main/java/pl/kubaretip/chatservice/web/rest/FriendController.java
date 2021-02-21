@@ -1,10 +1,7 @@
 package pl.kubaretip.chatservice.web.rest;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.kubaretip.authutils.SecurityUtils;
 import pl.kubaretip.chatservice.domain.Friend;
 import pl.kubaretip.chatservice.service.FriendService;
@@ -24,6 +21,13 @@ public class FriendController {
     public ResponseEntity<Friend> createNewFriend(@RequestParam("invite_code") String inviteCode) {
         var newFriendsRequest = friendService.createNewFriend(SecurityUtils.getCurrentUser(), inviteCode);
         return ResponseEntity.ok(newFriendsRequest);
+    }
+
+    @PatchMapping(path = "/{id}", params = {"accept"})
+    public ResponseEntity<Friend> replyToFriendsRequest(@PathVariable("id") long friendId,
+                                                        @RequestParam("accept") boolean accept) {
+        friendService.replyToFriendsRequest(friendId, SecurityUtils.getCurrentUser(), accept);
+        return ResponseEntity.noContent().build();
     }
 
 

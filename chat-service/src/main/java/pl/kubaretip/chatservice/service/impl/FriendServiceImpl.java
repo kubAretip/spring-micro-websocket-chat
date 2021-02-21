@@ -50,4 +50,37 @@ public class FriendServiceImpl implements FriendService {
         return friendRepository.save(newFriend);
     }
 
+    @Override
+    public void replyToFriendsRequest(long friendId, String currentUserId, boolean accept) {
+
+        var friend = friendRepository.findById(friendId)
+                .orElseThrow(() -> new NotFoundException("Friends request not found"));
+
+
+        if (friend.getFriendsRequestStatus().equals(FriendStatus.ACCEPTED)) {
+            throw new InvalidDataException("Friends request already accepted.");
+        }
+
+        if (!friend.getRecipient().getUserId().equals(UUID.fromString(currentUserId))) {
+            throw new InvalidDataException("You are not recipient of this request");
+        }
+
+
+        if (accept)
+            acceptFriendsRequest(friend);
+        else
+            deleteFriendRequest(friend);
+
+    }
+
+    private void deleteFriendRequest(Friend friend) {
+        friendRepository.delete(friend);
+    }
+
+    private void acceptFriendsRequest(Friend friend) {
+        friend.setFriendsRequestStatus(FriendStatus.ACCEPTED);
+        friendRepository.save(friend);
+    }
+
+
 }
