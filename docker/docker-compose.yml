@@ -5,6 +5,9 @@ volumes:
     name: auth_service_vol
     driver: local
   mongo_chat:
+    name: chat_messages_service_vol
+    driver: local
+  mysql_chat:
     name: chat_service_vol
     driver: local
   rabbitmq:
@@ -24,18 +27,30 @@ services:
       - 3306:3306
     volumes:
       - mysql_auth:/var/lib/mysql
-  chat_db:
-    container_name: chat_service_mongo
+  messages_db:
+    container_name: chat_messages_service_mongo
     image: library/mongo:latest
     environment:
-      MONGO_INITDB_DATABASE: chat_service_database
-      MONGO_INITDB_ROOT_USERNAME: ${CHAT_SERVICE_ROOT_MONGO_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${CHAT_SERVICE_ROOT_MONGO_PASS}
+      MONGO_INITDB_DATABASE: chat_messages_service_database
+      MONGO_INITDB_ROOT_USERNAME: ${CHAT_MESSAGES_SERVICE_ROOT_MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${CHAT_MESSAGES_SERVICE_ROOT_MONGO_PASS}
     ports:
       - 27017:27017
     volumes:
       - mongo_chat:/var/lib/mongo
-      - ./init-chat-service-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./init-chat-messages-service-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+  chat_db:
+    container_name: chat_service_mysql
+    image: library/mysql:8.0.22
+    environment:
+      MYSQL_DATABASE: chat_service_database
+      MYSQL_USER: ${CHAT_SERVICE_MYSQL_USER}
+      MYSQL_PASSWORD: ${CHAT_SERVICE_MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${CHAT_SERVICE_MYSQL_ROOT_PASS}
+    ports:
+      - 3307:3306
+    volumes:
+      - mysql_chat:/var/lib/mysql
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq

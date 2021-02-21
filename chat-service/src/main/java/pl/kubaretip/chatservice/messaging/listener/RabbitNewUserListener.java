@@ -20,7 +20,7 @@ public class RabbitNewUserListener {
     @RabbitListener(queues = "#{newUsersQueue.name}")
     public void receiveNewUser(UserDTO userDTO) {
         log.debug("New user {}", userDTO.getUsername());
-        chatProfileService.createChatProfile(userDTO.getId(), userDTO.getUsername()).subscribe();
+        chatProfileService.createChatProfile(userDTO.getId(), userDTO.getUsername());
     }
 
 

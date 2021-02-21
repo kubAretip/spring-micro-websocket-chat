@@ -1,6 +1,6 @@
 package pl.kubaretip.chatservice.constants;
 
-public enum FriendsRequestStatus {
+public enum FriendStatus {
     SENT,
     ACCEPTED,
     REJECTED

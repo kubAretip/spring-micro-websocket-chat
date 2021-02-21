@@ -1,52 +1,41 @@
 package pl.kubaretip.chatservice.config;
 
+
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
-import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
-import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.kubaretip.authutils.jwt.JWTConfig;
+import pl.kubaretip.authutils.jwt.JWTFilter;
 import pl.kubaretip.authutils.jwt.JWTUtils;
 
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-@EnableWebFluxSecurity
-public class SecurityConfig {
 
-    @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
-                                                         ReactiveAuthenticationManager jwtAuthenticationManager,
-                                                         ServerAuthenticationConverter jwtAuthenticationConverter) {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
 
         http
-                .httpBasic().disable()
-                .formLogin().disable()
-                .logout().disable();
-        http.requestCache().requestCache(NoOpServerRequestCache.getInstance());
-        http.cors();
-        http.csrf().disable();
+            .cors()
+        .and()
+            .csrf()
+            .disable()
+            .httpBasic()
+            .disable()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+            .authorizeRequests()
+            .anyRequest()
+            .authenticated()
+        .and()
+            .addFilterAfter(new JWTFilter(jwtUtils()), UsernamePasswordAuthenticationFilter.class);
 
-        http.addFilterAt(authenticationWebFilter(jwtAuthenticationManager, jwtAuthenticationConverter),
-                SecurityWebFiltersOrder.AUTHENTICATION);
-
-        http.authorizeExchange()
-                .anyExchange()
-                .authenticated();
-
-
-        return http.build();
-    }
-
-
-    @Bean
-    public AuthenticationWebFilter authenticationWebFilter(ReactiveAuthenticationManager jwtAuthenticationManager,
-                                                           ServerAuthenticationConverter jwtAuthenticationConverter) {
-        var authenticationWebFilter = new AuthenticationWebFilter(jwtAuthenticationManager);
-        authenticationWebFilter.setServerAuthenticationConverter(jwtAuthenticationConverter);
-        return authenticationWebFilter;
+        // @formatter:on
     }
 
     @Bean
