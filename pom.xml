@@ -40,6 +40,7 @@
         <module>dto-models</module>
         <module>mail-service</module>
         <module>chat-service</module>
+        <module>chat-messages-service</module>
     </modules>
 
     <dependencies>
