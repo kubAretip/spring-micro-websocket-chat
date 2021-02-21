@@ -8,7 +8,7 @@ spring:
         git:
           uri: ${GIT_URI}
           search-paths:
-            - 'config-store/files'
-            - 'config-store/files/service/commons'
-            - 'config-store/files/service/*-service'
+            - 'files'
+            - 'files/service/commons'
+            - 'files/service/*-service'
           default-label: ${GIT_BRANCH}
