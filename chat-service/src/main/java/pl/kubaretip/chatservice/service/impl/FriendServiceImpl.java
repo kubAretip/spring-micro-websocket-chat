@@ -14,6 +14,7 @@ import pl.kubaretip.chatservice.repository.FriendRepository;
 import pl.kubaretip.chatservice.service.FriendService;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -91,5 +92,11 @@ public class FriendServiceImpl implements FriendService {
                 }, () -> {
                     throw new NotFoundException("Friends request not found");
                 });
+    }
+
+
+    @Override
+    public List<Friend> getAllRecipientFriendsWithSentStatus(String currentUser) {
+        return friendRepository.findByRecipientAndFriendsRequestStatus(UUID.fromString(currentUser), FriendStatus.SENT);
     }
 }
