@@ -1,5 +1,6 @@
 package pl.kubaretip.chatservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class Friend {
     private Long id;
 
     @Column(nullable = false, name = "sent_time")
-    public OffsetDateTime sentTime;
+    private OffsetDateTime sentTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_chat_profile_id", nullable = false)
