@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import pl.kubaretip.chatservice.domain.ChatProfile;
 import pl.kubaretip.chatservice.domain.FriendChat;
 
+import java.util.List;
+
 public interface FriendChatRepository extends JpaRepository<FriendChat, Long> {
 
 
@@ -13,6 +15,9 @@ public interface FriendChatRepository extends JpaRepository<FriendChat, Long> {
             "FROM FriendChat fc WHERE (fc.sender = :chatProfile1 AND fc.recipient = :chatProfile2) " +
             "OR (fc.sender = :chatProfile2 AND fc.recipient = :chatProfile1)")
     boolean existsFriendChatForUsers(ChatProfile chatProfile1, ChatProfile chatProfile2);
+
+
+    List<FriendChat> findBySender(ChatProfile sender);
 
 
 }
