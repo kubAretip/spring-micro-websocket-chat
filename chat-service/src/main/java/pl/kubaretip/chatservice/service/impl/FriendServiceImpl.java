@@ -1,9 +1,6 @@
 package pl.kubaretip.chatservice.service.impl;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.kubaretip.authutils.security.SecurityUserDetails;
 import pl.kubaretip.chatservice.constants.FriendStatus;
 import pl.kubaretip.chatservice.domain.Friend;
 import pl.kubaretip.chatservice.exception.AlreadyExistsException;
@@ -11,6 +8,7 @@ import pl.kubaretip.chatservice.exception.InvalidDataException;
 import pl.kubaretip.chatservice.exception.NotFoundException;
 import pl.kubaretip.chatservice.repository.ChatProfileRepository;
 import pl.kubaretip.chatservice.repository.FriendRepository;
+import pl.kubaretip.chatservice.service.FriendChatService;
 import pl.kubaretip.chatservice.service.FriendService;
 
 import java.time.OffsetDateTime;
@@ -23,10 +21,14 @@ public class FriendServiceImpl implements FriendService {
 
     private final ChatProfileRepository chatProfileRepository;
     private final FriendRepository friendRepository;
+    private final FriendChatService friendChatService;
 
-    public FriendServiceImpl(ChatProfileRepository chatProfileRepository, FriendRepository friendRepository) {
+    public FriendServiceImpl(ChatProfileRepository chatProfileRepository,
+                             FriendRepository friendRepository,
+                             FriendChatService friendChatService) {
         this.chatProfileRepository = chatProfileRepository;
         this.friendRepository = friendRepository;
+        this.friendChatService = friendChatService;
     }
 
     @Override
@@ -71,6 +73,8 @@ public class FriendServiceImpl implements FriendService {
         if (accept) {
             friend.setFriendsRequestStatus(FriendStatus.ACCEPTED);
             friendRepository.save(friend);
+            // create chat
+            friendChatService.createFriendChat(friend.getSender(), friend.getRecipient());
         } else {
             friendRepository.delete(friend);
         }

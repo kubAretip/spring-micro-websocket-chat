@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ChatProfile {
 
     @Id
-    @Column(nullable = false, name = "user_id", unique = true, length = 36, columnDefinition = "BINARY(16)")
+    @Column(nullable = false, name = "user_id", unique = true, columnDefinition = "BINARY(16)")
     private UUID userId;
 
     @Column(name = "friends_request_code", nullable = false, length = 64, unique = true)
