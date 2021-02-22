@@ -41,6 +41,7 @@
         <module>mail-service</module>
         <module>chat-service</module>
         <module>chat-messages-service</module>
+        <module>messages-websocket-service</module>
     </modules>
 
     <dependencies>
