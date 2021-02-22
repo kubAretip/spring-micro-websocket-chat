@@ -6,14 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @ToString
 @Getter
 @Setter
 @NoArgsConstructor
-public class ChatMessageDTO {
+public class ChatMessageDTO implements Serializable {
 
-    private Long id;
-    private String friendChat;
+    private String id;
+    private Long friendChat;
     private String sender;
     private String recipient;
     private String content;
