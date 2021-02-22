@@ -57,9 +57,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    command: sh -c "rabbitmq-plugins enable rabbitmq_stomp; rabbitmq-server"
     ports:
       - 5672:5672
       - 15672:15672
+      - 61613:61613
     volumes:
       - rabbitmq:/etc/rabbitmq/
       - rabbitmq:/var/lib/rabbitmq/
