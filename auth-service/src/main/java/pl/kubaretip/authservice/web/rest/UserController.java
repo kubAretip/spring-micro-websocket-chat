@@ -1,4 +1,4 @@
-package pl.kubaretip.authservice.rest.controller;
+package pl.kubaretip.authservice.web.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
