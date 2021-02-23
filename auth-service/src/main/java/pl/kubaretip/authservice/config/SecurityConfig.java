@@ -9,12 +9,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import pl.kubaretip.authservice.security.AuthenticationFailureHandler;
 import pl.kubaretip.authservice.security.AuthenticationSuccessHandler;
 import pl.kubaretip.authservice.security.JWTAuthenticationFilter;
 import pl.kubaretip.authservice.security.JWTBuilder;
 import pl.kubaretip.authutils.jwt.JWTConfig;
+import pl.kubaretip.authutils.jwt.JWTFilter;
+import pl.kubaretip.authutils.jwt.JWTUtils;
 
 
 @EnableWebSecurity
@@ -49,7 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
             .exceptionHandling()
             .authenticationEntryPoint(problemSupport)
-            .accessDeniedHandler(problemSupport);
+            .accessDeniedHandler(problemSupport)
+        .and()
+            .addFilterAfter(new JWTFilter(jwtUtils()), UsernamePasswordAuthenticationFilter.class);
 
         // @formatter:on
     }
@@ -64,6 +69,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
+    @Bean
+    public JWTUtils jwtUtils() {
+        return new JWTUtils(jwtConfig());
+    }
 
     @Bean
     public JWTConfig jwtConfig() {

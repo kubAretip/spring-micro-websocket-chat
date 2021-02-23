@@ -6,4 +6,6 @@ public interface UserService {
     User createUser(String username, String password, String email, String firstName, String lastName);
 
     void activateUser(String activationKey);
+
+    User findUserById(String userId);
 }

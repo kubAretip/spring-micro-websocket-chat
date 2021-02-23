@@ -3,7 +3,6 @@ package pl.kubaretip.authservice.rest.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.authservice.mapper.UserMapper;
 import pl.kubaretip.authservice.messaging.sender.UserSender;
@@ -49,5 +48,9 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") String userId) {
+        return ResponseEntity.ok(userMapper.mapToUserDTO(userService.findUserById(userId)));
+    }
 
 }

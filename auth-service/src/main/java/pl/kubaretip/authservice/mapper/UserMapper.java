@@ -1,5 +1,6 @@
 package pl.kubaretip.authservice.mapper;
 
+import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pl.kubaretip.authservice.domain.User;
@@ -14,9 +15,8 @@ public interface UserMapper {
     @Mapping(target = "id", expression = "java(convertIdToString(user.getId()))")
     UserDTO mapToUserDTO(User user);
 
-    @Mapping(target = "password", ignore = true)
+    @InheritConfiguration(name = "mapToUserDTO")
     @Mapping(target = "activationKey", ignore = true)
-    @Mapping(target = "id", expression = "java(convertIdToString(user.getId()))")
     UserDTO mapToUserDTOWithoutActivationKey(User user);
 
     default String convertIdToString(UUID id) {
