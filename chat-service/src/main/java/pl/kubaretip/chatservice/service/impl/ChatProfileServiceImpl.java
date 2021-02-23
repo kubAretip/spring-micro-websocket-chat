@@ -4,10 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import pl.kubaretip.authutils.SecurityUtils;
 import pl.kubaretip.chatservice.domain.ChatProfile;
 import pl.kubaretip.chatservice.repository.ChatProfileRepository;
 import pl.kubaretip.chatservice.service.ChatProfileService;
 import pl.kubaretip.exceptionutils.InvalidDataException;
+import pl.kubaretip.exceptionutils.NotFoundException;
 
 import java.util.UUID;
 
@@ -35,6 +37,19 @@ public class ChatProfileServiceImpl implements ChatProfileService {
         chatProfile.setUserId(UUID.fromString(userId));
         chatProfile.setFriendsRequestCode(generateFriendRequestCode(username));
         return chatProfileRepository.save(chatProfile);
+    }
+
+    @Override
+    public void generateNewFriendsRequestCode(String userId, String username) {
+        var chatProfile = chatProfileRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new NotFoundException("Not found chat profile for user " + userId));
+
+        if (!chatProfile.getUserId().toString().equals(SecurityUtils.getCurrentUser())) {
+            throw new InvalidDataException("Invalid user id");
+        }
+
+        chatProfile.setFriendsRequestCode(generateFriendRequestCode(username));
+        chatProfileRepository.save(chatProfile);
     }
 
     private String generateFriendRequestCode(String username) {

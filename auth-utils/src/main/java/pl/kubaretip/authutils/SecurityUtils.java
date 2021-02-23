@@ -9,4 +9,10 @@ public class SecurityUtils {
         var principal = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getId();
     }
+
+    public static String getCurrentUserPreferredUsername(){
+        var principal = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getUsername();
+    }
+
 }
