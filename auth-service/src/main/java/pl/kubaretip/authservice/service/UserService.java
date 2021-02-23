@@ -10,4 +10,6 @@ public interface UserService {
     User findUserById(String userId);
 
     User modifyUser(String userId, String firstName, String lastName);
+
+    void changeUserPassword(String userId, String currentPassword, String newPassword);
 }

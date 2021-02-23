@@ -7,6 +7,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.authservice.mapper.UserMapper;
 import pl.kubaretip.authservice.messaging.sender.UserSender;
 import pl.kubaretip.authservice.service.UserService;
+import pl.kubaretip.authservice.web.model.ChangePassRequest;
 import pl.kubaretip.dtomodels.UserDTO;
 
 import javax.validation.Valid;
@@ -57,6 +58,14 @@ public class UserController {
     public ResponseEntity<UserDTO> editUser(@PathVariable("id") String userId, @RequestBody UserDTO userDTO) {
         var user = userService.modifyUser(userId, userDTO.getFirstName(), userDTO.getLastName());
         return ResponseEntity.ok(userMapper.mapToUserDTO(user));
+    }
+
+
+    @PatchMapping("/{id}/change-password")
+    public ResponseEntity<Void> changeUserPassword(@PathVariable("id") String userId,
+                                                   @Valid @RequestBody ChangePassRequest request) {
+        userService.changeUserPassword(userId,request.getCurrentPassword(),request.getNewPassword());
+        return ResponseEntity.noContent().build();
     }
 
 

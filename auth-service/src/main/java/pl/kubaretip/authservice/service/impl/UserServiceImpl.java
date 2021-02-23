@@ -91,10 +91,7 @@ public class UserServiceImpl implements UserService {
     public User modifyUser(String userId, String firstName, String lastName) {
 
         var user = findUserById(userId);
-
-        if (!user.getId().toString().equals(SecurityUtils.getCurrentUser())) {
-            throw new InvalidDataException("Incorrect user id");
-        }
+        throwExceptionIfNotCurrentUser(user);
 
         if (StringUtils.isNotEmpty(firstName)) {
             user.setFirstName(StringUtils.capitalize(firstName.toLowerCase()));
@@ -108,4 +105,22 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public void changeUserPassword(String userId, String currentPassword, String newPassword) {
+        var user = findUserById(userId);
+        throwExceptionIfNotCurrentUser(user);
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new InvalidDataException("Incorrect current password");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    private void throwExceptionIfNotCurrentUser(User user) {
+        if (!user.getId().toString().equals(SecurityUtils.getCurrentUser())) {
+            throw new InvalidDataException("Incorrect user id");
+        }
+    }
 }
