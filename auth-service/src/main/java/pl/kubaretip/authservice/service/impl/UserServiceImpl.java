@@ -3,8 +3,10 @@ package pl.kubaretip.authservice.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.kubaretip.authservice.constants.ApplicationConstants;
 import pl.kubaretip.authservice.constants.AuthorityConstants;
 import pl.kubaretip.authservice.domain.Authority;
 import pl.kubaretip.authservice.domain.User;
@@ -18,6 +20,8 @@ import pl.kubaretip.exceptionutils.NotFoundException;
 
 import java.util.HashSet;
 import java.util.UUID;
+
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Slf4j
 @Service
@@ -38,10 +42,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(String username, String password, String email, String firstName, String lastName) {
 
+        if (isEmpty(username) && isBlank(username) && !StringUtils.isAlphanumeric(username)) {
+            throw new InvalidDataException("Invalid username");
+        }
+        if (isEmpty(password) && isBlank(password)
+                && (password.length() < ApplicationConstants.USER_PASSWORD_MIN_LENGTH
+                || password.length() > ApplicationConstants.USER_PASSWORD_MAX_LENGTH)) {
+            throw new InvalidDataException("Invalid password");
+        }
+        if (isEmpty(email) && isBlank(email)
+                && !new EmailValidator().isValid(email, null)) {
+            throw new InvalidDataException("Invalid email");
+        }
+        if (isEmpty(firstName) && isBlank(firstName)) {
+            throw new InvalidDataException("Invalid first name");
+        }
+        if (isEmpty(lastName) && isBlank(lastName)) {
+            throw new InvalidDataException("Invalid last name");
+        }
         if (userRepository.existsByUsernameIgnoreCase(username)) {
             throw new AlreadyExistsException("User with username " + username + " already exists.");
         }
-
         if (userRepository.existsByEmailIgnoreCase(email)) {
             throw new AlreadyExistsException("User with email " + email + " already exists.");
         }
@@ -66,7 +87,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void activateUser(String activationKey) {
 
-        if (!StringUtils.isNotBlank(activationKey))
+        if (isBlank(activationKey))
             throw new InvalidDataException("Invalid activation key");
 
         userRepository.findOneByActivationKey(activationKey)
@@ -93,11 +114,11 @@ public class UserServiceImpl implements UserService {
         var user = findUserById(userId);
         throwExceptionIfNotCurrentUser(user);
 
-        if (StringUtils.isNotEmpty(firstName)) {
+        if (isNotEmpty(firstName)) {
             user.setFirstName(StringUtils.capitalize(firstName.toLowerCase()));
         }
 
-        if (StringUtils.isNotEmpty(lastName)) {
+        if (isNotEmpty(lastName)) {
             user.setFirstName(StringUtils.capitalize(lastName.toLowerCase()));
         }
 
