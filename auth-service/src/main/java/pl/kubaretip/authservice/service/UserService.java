@@ -8,4 +8,6 @@ public interface UserService {
     void activateUser(String activationKey);
 
     User findUserById(String userId);
+
+    User modifyUser(String userId, String firstName, String lastName);
 }

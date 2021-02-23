@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
+import pl.kubaretip.authservice.exception.InvalidDataException;
 import pl.kubaretip.authservice.exception.UserAlreadyExistsException;
 import pl.kubaretip.authservice.exception.UserNotFound;
 
@@ -32,6 +33,17 @@ public class CustomExceptionHandler {
                 .withStatus(Status.NOT_FOUND)
                 .withDetail(ex.getLocalizedMessage())
                 .withTitle(Status.NOT_FOUND.getReasonPhrase())
+                .build();
+    }
+
+    @ExceptionHandler(value = {InvalidDataException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Problem handleInvalidData(final InvalidDataException ex, WebRequest request) {
+        return Problem.builder()
+                .withStatus(Status.BAD_REQUEST)
+                .withDetail(ex.getLocalizedMessage())
+                .withTitle(Status.BAD_REQUEST.getReasonPhrase())
+                .withType(URI.create(request.getContextPath()))
                 .build();
     }
 

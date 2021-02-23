@@ -14,6 +14,7 @@ import pl.kubaretip.authservice.exception.UserNotFound;
 import pl.kubaretip.authservice.repository.AuthorityRepository;
 import pl.kubaretip.authservice.repository.UserRepository;
 import pl.kubaretip.authservice.service.UserService;
+import pl.kubaretip.authutils.SecurityUtils;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -49,8 +50,8 @@ public class UserServiceImpl implements UserService {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setActivationKey(RandomStringUtils.randomAlphanumeric(124));
-        user.setFirstName(StringUtils.capitalize(firstName));
-        user.setLastName(StringUtils.capitalize(lastName));
+        user.setFirstName(StringUtils.capitalize(firstName.toLowerCase()));
+        user.setLastName(StringUtils.capitalize(lastName.toLowerCase()));
         user.setEmail(email);
 
         var authorities = new HashSet<Authority>();
@@ -83,6 +84,27 @@ public class UserServiceImpl implements UserService {
     public User findUserById(String userId) {
         return userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new UserNotFound("Not found user with id " + userId));
+    }
+
+
+    @Override
+    public User modifyUser(String userId, String firstName, String lastName) {
+
+        var user = findUserById(userId);
+
+        if (!user.getId().toString().equals(SecurityUtils.getCurrentUser())) {
+            throw new InvalidDataException("Incorrect user id");
+        }
+
+        if (StringUtils.isNotEmpty(firstName)) {
+            user.setFirstName(StringUtils.capitalize(firstName.toLowerCase()));
+        }
+
+        if (StringUtils.isNotEmpty(lastName)) {
+            user.setFirstName(StringUtils.capitalize(lastName.toLowerCase()));
+        }
+
+        return userRepository.save(user);
     }
 
 

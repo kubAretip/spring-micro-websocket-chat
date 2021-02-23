@@ -29,8 +29,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createNewAuthUser(@Valid @RequestBody UserDTO userDTO,
-                                                     UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<UserDTO> createNewUser(@Valid @RequestBody UserDTO userDTO,
+                                                 UriComponentsBuilder uriComponentsBuilder) {
         var user = userService.createUser(userDTO.getUsername(), userDTO.getPassword(),
                 userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
 
@@ -52,5 +52,12 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") String userId) {
         return ResponseEntity.ok(userMapper.mapToUserDTO(userService.findUserById(userId)));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserDTO> editUser(@PathVariable("id") String userId, @RequestBody UserDTO userDTO) {
+        var user = userService.modifyUser(userId, userDTO.getFirstName(), userDTO.getLastName());
+        return ResponseEntity.ok(userMapper.mapToUserDTO(user));
+    }
+
 
 }
