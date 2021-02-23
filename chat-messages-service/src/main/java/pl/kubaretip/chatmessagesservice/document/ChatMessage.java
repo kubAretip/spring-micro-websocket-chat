@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document(collection = "chat_message", collation = "chat_messages_service_database")
+@Document(collection = "chat_message")
 public class ChatMessage {
 
     @Id
