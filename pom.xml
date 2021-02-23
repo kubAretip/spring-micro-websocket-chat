@@ -34,7 +34,6 @@
     <modules>
         <module>config-server</module>
         <module>eureka-server</module>
-        <module>zuul-server</module>
         <module>auth-service</module>
         <module>auth-utils</module>
         <module>dto-models</module>
@@ -42,6 +41,7 @@
         <module>chat-service</module>
         <module>chat-messages-service</module>
         <module>messages-websocket-service</module>
+        <module>cloud-gateway</module>
     </modules>
 
     <dependencies>
