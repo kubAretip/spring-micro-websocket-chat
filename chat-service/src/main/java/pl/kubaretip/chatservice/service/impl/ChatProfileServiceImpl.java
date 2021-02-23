@@ -5,10 +5,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.chatservice.domain.ChatProfile;
-import pl.kubaretip.chatservice.exception.InvalidDataException;
 import pl.kubaretip.chatservice.repository.ChatProfileRepository;
 import pl.kubaretip.chatservice.service.ChatProfileService;
-import reactor.core.publisher.Mono;
+import pl.kubaretip.exceptionutils.InvalidDataException;
 
 import java.util.UUID;
 

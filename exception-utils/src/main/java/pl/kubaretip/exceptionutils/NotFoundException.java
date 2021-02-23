@@ -1,4 +1,4 @@
-package pl.kubaretip.chatservice.exception;
+package pl.kubaretip.exceptionutils;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

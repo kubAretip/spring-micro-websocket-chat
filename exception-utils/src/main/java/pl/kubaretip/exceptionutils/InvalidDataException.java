@@ -1,4 +1,4 @@
-package pl.kubaretip.authservice.exception;
+package pl.kubaretip.exceptionutils;
 
 public class InvalidDataException extends RuntimeException {
     public InvalidDataException(String message) {

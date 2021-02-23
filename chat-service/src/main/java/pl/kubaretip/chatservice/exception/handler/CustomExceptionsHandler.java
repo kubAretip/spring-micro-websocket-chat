@@ -1,7 +1,5 @@
 package pl.kubaretip.chatservice.exception.handler;
 
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,14 +7,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-import pl.kubaretip.chatservice.exception.AlreadyExistsException;
-import pl.kubaretip.chatservice.exception.InvalidDataException;
-import pl.kubaretip.chatservice.exception.NotFoundException;
+import pl.kubaretip.exceptionutils.AlreadyExistsException;
+import pl.kubaretip.exceptionutils.InvalidDataException;
+import pl.kubaretip.exceptionutils.NotFoundException;
 
 import java.net.URI;
 
 @RestControllerAdvice
-@Slf4j
 public class CustomExceptionsHandler {
 
     @ExceptionHandler(value = {NotFoundException.class})

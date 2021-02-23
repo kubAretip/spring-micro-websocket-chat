@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.chatservice.domain.ChatProfile;
 import pl.kubaretip.chatservice.domain.FriendChat;
-import pl.kubaretip.chatservice.exception.AlreadyExistsException;
-import pl.kubaretip.chatservice.exception.NotFoundException;
 import pl.kubaretip.chatservice.repository.ChatProfileRepository;
 import pl.kubaretip.chatservice.repository.FriendChatRepository;
 import pl.kubaretip.chatservice.service.FriendChatService;
+import pl.kubaretip.exceptionutils.AlreadyExistsException;
+import pl.kubaretip.exceptionutils.NotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.List;

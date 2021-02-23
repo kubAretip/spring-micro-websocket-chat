@@ -1,4 +1,4 @@
-package pl.kubaretip.chatservice.exception;
+package pl.kubaretip.exceptionutils;
 
 public class AlreadyExistsException extends RuntimeException {
     public AlreadyExistsException(String message) {

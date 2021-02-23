@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import pl.kubaretip.authservice.constants.AuthorityConstants;
 import pl.kubaretip.authservice.domain.Authority;
 import pl.kubaretip.authservice.domain.User;
-import pl.kubaretip.authservice.exception.InvalidDataException;
-import pl.kubaretip.authservice.exception.UserAlreadyExistsException;
-import pl.kubaretip.authservice.exception.UserNotFound;
 import pl.kubaretip.authservice.repository.AuthorityRepository;
 import pl.kubaretip.authservice.repository.UserRepository;
 import pl.kubaretip.authservice.service.UserService;
 import pl.kubaretip.authutils.SecurityUtils;
+import pl.kubaretip.exceptionutils.AlreadyExistsException;
+import pl.kubaretip.exceptionutils.InvalidDataException;
+import pl.kubaretip.exceptionutils.NotFoundException;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -39,11 +39,11 @@ public class UserServiceImpl implements UserService {
     public User createUser(String username, String password, String email, String firstName, String lastName) {
 
         if (userRepository.existsByUsernameIgnoreCase(username)) {
-            throw new UserAlreadyExistsException("User with username " + username + " already exists.");
+            throw new AlreadyExistsException("User with username " + username + " already exists.");
         }
 
         if (userRepository.existsByEmailIgnoreCase(email)) {
-            throw new UserAlreadyExistsException("User with email " + email + " already exists.");
+            throw new AlreadyExistsException("User with email " + email + " already exists.");
         }
 
         var user = new User();
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserById(String userId) {
         return userRepository.findById(UUID.fromString(userId))
-                .orElseThrow(() -> new UserNotFound("Not found user with id " + userId));
+                .orElseThrow(() -> new NotFoundException("Not found user with id " + userId));
     }
 
 

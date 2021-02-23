@@ -42,6 +42,7 @@
         <module>chat-messages-service</module>
         <module>messages-websocket-service</module>
         <module>cloud-gateway</module>
+        <module>exception-utils</module>
     </modules>
 
     <dependencies>

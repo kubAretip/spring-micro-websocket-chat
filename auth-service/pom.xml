@@ -21,6 +21,12 @@
 
         <dependency>
             <groupId>pl.kubaretip</groupId>
+            <artifactId>exception-utils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pl.kubaretip</groupId>
             <artifactId>dto-models</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
