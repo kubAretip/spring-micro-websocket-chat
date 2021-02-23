@@ -1,12 +1,10 @@
 package pl.kubaretip.chatmessagesservice.web.rest;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.kubaretip.chatmessagesservice.document.ChatMessage;
 import pl.kubaretip.chatmessagesservice.service.ChatMessageService;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/chat-messages")
@@ -20,9 +18,9 @@ public class ChatMessageController {
 
     @GetMapping(params = {"friend_chat_id1", "friend_chat_id2", "from", "size"})
     public Flux<ChatMessage> getLastUsersMessagesFromTimeWithSize(@RequestParam("friend_chat_id1") long friendChatId1,
-                                                         @RequestParam("friend_chat_id2") long friendChatId2,
-                                                         @RequestParam("from") String fromTime,
-                                                         @RequestParam("size") int numberOfMessagesToFetch) {
+                                                                  @RequestParam("friend_chat_id2") long friendChatId2,
+                                                                  @RequestParam("from") String fromTime,
+                                                                  @RequestParam("size") int numberOfMessagesToFetch) {
         return chatMessageService.findLastUsersMessagesFromTime(friendChatId1, friendChatId2, fromTime, numberOfMessagesToFetch);
     }
 
@@ -34,5 +32,9 @@ public class ChatMessageController {
         return chatMessageService.getLastUserMessages(friendChatId1, friendChatId2, size);
     }
 
+    @PatchMapping(params = "friend_chat_id")
+    public Mono<Void> setDeliveredStatusForAllRecipientMessagesInFriendChat(@RequestParam("friend_chat_id") long friendChatId) {
+        return chatMessageService.setDeliveredStatusForAllRecipientMessagesInFriendChat(friendChatId);
+    }
 
 }

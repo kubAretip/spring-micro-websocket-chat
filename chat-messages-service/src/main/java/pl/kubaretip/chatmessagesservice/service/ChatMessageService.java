@@ -9,7 +9,9 @@ public interface ChatMessageService {
     Mono<ChatMessage> saveChatMessage(ChatMessageDTO chatMessageDTO);
 
     Flux<ChatMessage> findLastUsersMessagesFromTime(long firstUserFriendChatId, long secondUserFriendChatId,
-                                                         String beforeTime, int numberOfMessagesToFetch);
+                                                    String beforeTime, int numberOfMessagesToFetch);
 
     Flux<ChatMessage> getLastUserMessages(long friendChatId1, long friendChatId2, int numberOfMessagesToFetch);
+
+    Mono<Void> setDeliveredStatusForAllRecipientMessagesInFriendChat(long friendChatId);
 }

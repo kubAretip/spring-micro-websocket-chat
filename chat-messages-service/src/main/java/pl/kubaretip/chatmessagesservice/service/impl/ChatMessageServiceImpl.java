@@ -10,6 +10,7 @@ import pl.kubaretip.chatmessagesservice.constant.MessageStatus;
 import pl.kubaretip.chatmessagesservice.document.ChatMessage;
 import pl.kubaretip.chatmessagesservice.mapper.ChatMessageMapper;
 import pl.kubaretip.chatmessagesservice.repository.ChatMessageRepository;
+import pl.kubaretip.chatmessagesservice.security.SecurityUtils;
 import pl.kubaretip.chatmessagesservice.service.ChatMessageService;
 import pl.kubaretip.dtomodels.ChatMessageDTO;
 import reactor.core.publisher.Flux;
@@ -63,7 +64,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public Flux<ChatMessage> findLastUsersMessagesFromTime(long firstUserFriendChatId, long secondUserFriendChatId,
-                                                                String beforeTime, int numberOfMessagesToFetch) {
+                                                           String beforeTime, int numberOfMessagesToFetch) {
 
         return Flux.just(beforeTime)
                 .flatMap(beforeTimeInString -> {
@@ -87,4 +88,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         var sortedByTimeDescWithSize = PageRequest.of(0, numberOfMessagesToFetch, Sort.by("time").descending());
         return chatMessageRepository.findByFriendChatOrFriendChat(friendChatId1, friendChatId2, sortedByTimeDescWithSize);
     }
+
+    @Override
+    public Mono<Void> setDeliveredStatusForAllRecipientMessagesInFriendChat(long friendChatId) {
+
+        return SecurityUtils.getCurrentUser()
+                .flatMapMany(recipientId -> chatMessageRepository.findByFriendChatAndRecipientAndStatus(friendChatId,
+                        recipientId, MessageStatus.RECEIVED))
+                .doOnNext(chatMessage -> chatMessage.setStatus(MessageStatus.DELIVERED))
+                .flatMap(chatMessageRepository::save)
+                .then();
+    }
+
 }
