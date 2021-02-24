@@ -42,10 +42,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(String username, String password, String email, String firstName, String lastName) {
 
-        if (isEmpty(username) && isBlank(username) && !StringUtils.isAlphanumeric(username)) {
+        if (isEmpty(username) || isBlank(username) || !StringUtils.isAlphanumeric(username)) {
             throw new InvalidDataException("Invalid username");
         }
-        if (isEmpty(password) && isBlank(password)) {
+        if (isEmpty(password) || isBlank(password)) {
             throw new InvalidDataException("Invalid password");
         }
         if (password.length() < ApplicationConstants.USER_PASSWORD_MIN_LENGTH
@@ -55,10 +55,10 @@ public class UserServiceImpl implements UserService {
         if (!new EmailValidator().isValid(email, null)) {
             throw new InvalidDataException("Invalid email");
         }
-        if (isEmpty(firstName) && isBlank(firstName)) {
+        if (isEmpty(firstName) || isBlank(firstName)) {
             throw new InvalidDataException("Invalid first name");
         }
-        if (isEmpty(lastName) && isBlank(lastName)) {
+        if (isEmpty(lastName) || isBlank(lastName)) {
             throw new InvalidDataException("Invalid last name");
         }
         if (userRepository.existsByUsernameIgnoreCase(username)) {
