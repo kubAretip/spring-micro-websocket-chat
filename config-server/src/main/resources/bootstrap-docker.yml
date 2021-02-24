@@ -1,5 +1,6 @@
 encrypt:
   key: ${CONFIG_SERVER_SECRET}
+
 spring:
   cloud:
     config:
@@ -11,3 +12,7 @@ spring:
             - 'files/service/commons'
             - 'files/service/*-service'
           default-label: ${GIT_BRANCH}
+          ignore-local-ssh-settings: true
+          host-key-algorithm: ssh-rsa
+          host-key: ${HOST_KEY}
+          private-key: ${PRIVATE_KEY}
