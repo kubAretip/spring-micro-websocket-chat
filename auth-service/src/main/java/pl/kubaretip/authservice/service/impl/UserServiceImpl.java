@@ -45,10 +45,12 @@ public class UserServiceImpl implements UserService {
         if (isEmpty(username) && isBlank(username) && !StringUtils.isAlphanumeric(username)) {
             throw new InvalidDataException("Invalid username");
         }
-        if (isEmpty(password) && isBlank(password)
-                && (password.length() < ApplicationConstants.USER_PASSWORD_MIN_LENGTH
-                || password.length() > ApplicationConstants.USER_PASSWORD_MAX_LENGTH)) {
+        if (isEmpty(password) && isBlank(password)) {
             throw new InvalidDataException("Invalid password");
+        }
+        if (password.length() < ApplicationConstants.USER_PASSWORD_MIN_LENGTH
+                || password.length() > ApplicationConstants.USER_PASSWORD_MAX_LENGTH) {
+            throw new InvalidDataException("Invalid password length");
         }
         if (isEmpty(email) && isBlank(email)
                 && !new EmailValidator().isValid(email, null)) {
