@@ -1,0 +1,186 @@
+version: '3.8'
+
+volumes:
+  mysql_auth:
+    name: auth_service_vol
+    driver: local
+  mongo_chat:
+    name: chat_messages_service_vol
+    driver: local
+  mysql_chat:
+    name: chat_service_vol
+    driver: local
+  rabbitmq:
+    name: rabbitmq_vol
+    driver: local
+
+networks:
+  spring-chat-net:
+    driver: bridge
+
+services:
+  config-server:
+    container_name: config-server
+    build:
+      context: ../config-server
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      CONFIG_SERVER_SECRET: ${CONFIG_SERVER_SECRET}
+      GIT_BRANCH: ${REPO_BRANCH}
+      GIT_URI: ${GIT_REPO_URI}
+      HOST_KEY: ${KNOWN_HOST_KEY}
+      PRIVATE_KEY: ${PEM}
+    ports:
+      - 8888:8888
+    networks:
+      - spring-chat-net
+  eureka-server:
+    container_name: eureka-server
+    build:
+      context: ../eureka-server
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      CLOUD_CONFIG_URI: ${CONFIG_SERVER_URI}
+    ports:
+      - 8761:8761
+    networks:
+      - spring-chat-net
+  cloud-gateway:
+    container_name: cloud-gateway
+    build:
+      context: ../cloud-gateway
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      CLOUD_CONFIG_URI: ${CONFIG_SERVER_URI}
+    ports:
+      - 8080:8080
+    networks:
+      - spring-chat-net
+  auth-service:
+    container_name: auth-service
+    build:
+      context: ../auth-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      CLOUD_CONFIG_URI: ${CONFIG_SERVER_URI}
+    networks:
+      - spring-chat-net
+  mail-service:
+    container_name: mail-service
+    build:
+      context: ../mail-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      CLOUD_CONFIG_URI: ${CONFIG_SERVER_URI}
+    networks:
+      - spring-chat-net
+  messages-websocket-service:
+    container_name: messages-websocket-service
+    build:
+      context: ../messages-websocket-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      CLOUD_CONFIG_URI: ${CONFIG_SERVER_URI}
+    networks:
+      - spring-chat-net
+  chat-messages-service:
+    container_name: chat-messages-service
+    build:
+      context: ../chat-messages-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      CLOUD_CONFIG_URI: ${CONFIG_SERVER_URI}
+    networks:
+      - spring-chat-net
+  chat-service:
+    container_name: chat-service
+    build:
+      context: ../chat-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      CLOUD_CONFIG_URI: ${CONFIG_SERVER_URI}
+    networks:
+      - spring-chat-net
+#DATABASES
+  auth_db:
+    container_name: auth-service-mysql
+    image: library/mysql:8.0.22
+    environment:
+      MYSQL_DATABASE: auth_service_database
+      MYSQL_USER: ${AUTH_SERVICE_MYSQL_USER}
+      MYSQL_PASSWORD: ${AUTH_SERVICE_MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${AUTH_SERVICE_MYSQL_ROOT_PASS}
+    ports:
+      - 3306:3306
+    networks:
+      - spring-chat-net
+    volumes:
+      - mysql_auth:/var/lib/mysql
+  chat_db:
+    container_name: chat-service-mysql
+    image: library/mysql:8.0.22
+    environment:
+      MYSQL_DATABASE: chat_service_database
+      MYSQL_USER: ${CHAT_SERVICE_MYSQL_USER}
+      MYSQL_PASSWORD: ${CHAT_SERVICE_MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${CHAT_SERVICE_MYSQL_ROOT_PASS}
+      MYSQL_TCP_PORT: 3307
+    ports:
+      - 3307:3307
+    networks:
+      - spring-chat-net
+    volumes:
+      - mysql_chat:/var/lib/mysql
+  messages_db:
+    container_name: chat-messages-service-mongo
+    image: library/mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: chat_messages_service_database
+      MONGO_INITDB_ROOT_USERNAME: ${CHAT_MESSAGES_SERVICE_ROOT_MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${CHAT_MESSAGES_SERVICE_ROOT_MONGO_PASS}
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_chat:/var/lib/mongo
+      - ./init-chat-messages-service-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - spring-chat-net
+#RABBIT
+  rabbitmq:
+    container_name: rabbitmq-service
+    image: rabbitmq:3-management
+    hostname: rabbitmq-service
+    command: sh -c "rabbitmq-plugins enable rabbitmq_stomp; rabbitmq-server"
+    networks:
+      - spring-chat-net
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 61613:61613
+    volumes:
+      - rabbitmq:/etc/rabbitmq/
+      - rabbitmq:/var/lib/rabbitmq/
+      - rabbitmq:/var/log/rabbitmq/
+      - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+#MAIL
+  mailhog:
+    container_name: mailhog-service
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025 # smtp port
+      - 8025:8025 # web ui port
+    networks:
+      - spring-chat-net

@@ -52,11 +52,8 @@ services:
     volumes:
       - mysql_chat:/var/lib/mysql
   rabbitmq:
+    container_name: rabbitmq-service
     image: rabbitmq:3-management
-    container_name: rabbitmq
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     command: sh -c "rabbitmq-plugins enable rabbitmq_stomp; rabbitmq-server"
     ports:
       - 5672:5672
@@ -66,6 +63,7 @@ services:
       - rabbitmq:/etc/rabbitmq/
       - rabbitmq:/var/lib/rabbitmq/
       - rabbitmq:/var/log/rabbitmq/
+      - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
   # Mail catcher for local debugging
   mailhog:
     image: mailhog/mailhog

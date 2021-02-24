@@ -1,13 +1,3 @@
 spring:
   application:
     name: chat-messages
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: chat_messages_service_database
-      username: chat-messages-service-user
-      password: chat-messages-service-pass-123
-  rabbitmq:
-    username: rabbitmq-user
-    password: rabbitmq-pass-123
