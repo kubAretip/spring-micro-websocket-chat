@@ -52,8 +52,7 @@ public class UserServiceImpl implements UserService {
                 || password.length() > ApplicationConstants.USER_PASSWORD_MAX_LENGTH) {
             throw new InvalidDataException("Invalid password length");
         }
-        if (isEmpty(email) && isBlank(email)
-                && !new EmailValidator().isValid(email, null)) {
+        if (!new EmailValidator().isValid(email, null)) {
             throw new InvalidDataException("Invalid email");
         }
         if (isEmpty(firstName) && isBlank(firstName)) {
