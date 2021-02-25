@@ -19,7 +19,7 @@ public class ChatMessageController {
 
     @Operation(summary = "Get last users messages",
             description = "Get last messages in users friend chat.")
-    @GetMapping(params = {"friend_chat_id1", "friend_chat_id2", "from", "size"})
+    @GetMapping
     public Flux<ChatMessage> getLastUsersMessagesFromTimeWithSize(@RequestParam("friend_chat_id1") long friendChatId1,
                                                                   @RequestParam("friend_chat_id2") long friendChatId2,
                                                                   @RequestParam(value = "from", required = false) String fromTime,
