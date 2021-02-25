@@ -20,6 +20,9 @@ public interface UserMapper {
     UserDTO mapToUserDTOWithoutActivationKey(User user);
 
     default String convertIdToString(UUID id) {
+        if (id == null) {
+            return null;
+        }
         return id.toString();
     }
 
