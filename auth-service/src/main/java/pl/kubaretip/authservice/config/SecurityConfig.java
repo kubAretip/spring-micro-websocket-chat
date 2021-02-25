@@ -1,5 +1,6 @@
 package pl.kubaretip.authservice.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
@@ -8,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import pl.kubaretip.authservice.security.AuthenticationFailureHandler;
@@ -25,9 +25,12 @@ import pl.kubaretip.authutils.jwt.JWTUtils;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SecurityProblemSupport problemSupport;
+    private final ObjectMapper objectMapper;
 
-    public SecurityConfig(SecurityProblemSupport problemSupport) {
+    public SecurityConfig(SecurityProblemSupport problemSupport,
+                          ObjectMapper objectMapper) {
         this.problemSupport = problemSupport;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -62,8 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JWTAuthenticationFilter authenticationFilter() throws Exception {
         var filter = new JWTAuthenticationFilter();
-        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwtBuilder()));
-        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler());
+        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwtBuilder(), objectMapper));
+        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler(objectMapper));
         filter.setAuthenticationManager(super.authenticationManager());
         filter.setFilterProcessesUrl(jwtConfig().getAuthEndpoint());
         return filter;

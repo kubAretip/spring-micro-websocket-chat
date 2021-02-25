@@ -15,6 +15,12 @@ import java.nio.charset.StandardCharsets;
 
 public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    private final ObjectMapper objectMapper;
+
+    public AuthenticationFailureHandler(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -28,7 +34,7 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
                 .withTitle(Status.UNAUTHORIZED.getReasonPhrase())
                 .build();
 
-        var jsonErrorResponse = new ObjectMapper().writeValueAsString(problem);
+        var jsonErrorResponse = objectMapper.writeValueAsString(problem);
         out.print(jsonErrorResponse);
         out.flush();
     }
