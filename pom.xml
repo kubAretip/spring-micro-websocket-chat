@@ -29,6 +29,7 @@
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
         <flyway-core.version>6.5.7</flyway-core.version>
         <problem-spring-web.version>0.26.2</problem-spring-web.version>
+        <springdoc-openapi-ui.version>1.5.4</springdoc-openapi-ui.version>
     </properties>
 
     <modules>

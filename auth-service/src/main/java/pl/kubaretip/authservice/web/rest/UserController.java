@@ -1,5 +1,6 @@
 package pl.kubaretip.authservice.web.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import pl.kubaretip.authservice.web.model.ChangePassRequest;
 import pl.kubaretip.dtomodels.UserDTO;
 
 import javax.validation.Valid;
+
 
 @Slf4j
 @RestController
@@ -29,6 +31,7 @@ public class UserController {
         this.userSender = userSender;
     }
 
+    @Operation(summary = "Create new user", description = "User registration endpoint", tags = "Registration")
     @PostMapping
     public ResponseEntity<UserDTO> createNewUser(@Valid @RequestBody UserDTO userDTO,
                                                  UriComponentsBuilder uriComponentsBuilder) {
@@ -64,9 +67,8 @@ public class UserController {
     @PatchMapping("/{id}/change-password")
     public ResponseEntity<Void> changeUserPassword(@PathVariable("id") String userId,
                                                    @Valid @RequestBody ChangePassRequest request) {
-        userService.changeUserPassword(userId,request.getCurrentPassword(),request.getNewPassword());
+        userService.changeUserPassword(userId, request.getCurrentPassword(), request.getNewPassword());
         return ResponseEntity.noContent().build();
     }
-
 
 }
