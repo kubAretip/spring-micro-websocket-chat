@@ -16,11 +16,18 @@ import pl.kubaretip.authutils.jwt.JWTUtils;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+    private static final String[] SWAGGER_AUTH_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/webjars/**"
+    };
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
                                                          ReactiveAuthenticationManager jwtAuthenticationManager,
                                                          ServerAuthenticationConverter jwtAuthenticationConverter) {
-
         http
                 .httpBasic().disable()
                 .formLogin().disable()
@@ -33,9 +40,8 @@ public class SecurityConfig {
                 SecurityWebFiltersOrder.AUTHENTICATION);
 
         http.authorizeExchange()
-                .anyExchange()
-                .authenticated();
-
+                .pathMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
+                .anyExchange().authenticated();
 
         return http.build();
     }

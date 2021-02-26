@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import pl.kubaretip.authservice.security.AuthenticationFailureHandler;
@@ -25,6 +24,12 @@ import pl.kubaretip.authutils.jwt.JWTUtils;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SecurityProblemSupport problemSupport;
+    private static final String[] SWAGGER_AUTH_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
     public SecurityConfig(SecurityProblemSupport problemSupport) {
         this.problemSupport = problemSupport;
@@ -48,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers(HttpMethod.POST, jwtConfig().getAuthEndpoint()).permitAll()
             .mvcMatchers(HttpMethod.POST,"/users").permitAll()
             .mvcMatchers(HttpMethod.PATCH,"/users/activate").permitAll()
+            .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated()
         .and()
             .exceptionHandling()

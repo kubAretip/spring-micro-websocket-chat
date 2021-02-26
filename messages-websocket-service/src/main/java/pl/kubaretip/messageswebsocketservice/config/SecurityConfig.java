@@ -13,18 +13,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+
         http
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .httpBasic()
-                .disable()
-                .authorizeRequests()
-                .mvcMatchers("/ws").permitAll();
+            .cors()
+        .and()
+            .csrf()
+            .disable()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+            .httpBasic()
+            .disable()
+            .authorizeRequests()
+            .mvcMatchers("/ws").permitAll()
+            .anyRequest()
+            .authenticated();
+
+        // @formatter:on
     }
 
     @Bean

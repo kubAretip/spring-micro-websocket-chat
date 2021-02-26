@@ -14,6 +14,12 @@ import pl.kubaretip.authutils.jwt.JWTUtils;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String[] SWAGGER_AUTH_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
+            .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
             .anyRequest()
             .authenticated()
         .and()

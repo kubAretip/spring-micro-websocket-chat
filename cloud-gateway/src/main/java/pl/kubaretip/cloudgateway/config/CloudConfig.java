@@ -32,6 +32,11 @@ public class CloudConfig {
                         .uri("lb://MESSAGES-WEBSOCKET")
                         .id("MESSAGES-WEBSOCKET")
                 )
+                .route(predicateSpec -> predicateSpec.path("/v3/api-docs/**")
+                        .filters(f -> f.rewritePath("/v3/api-docs/(?<path>.*)", "/${path}/v3/api-docs"))
+                        .uri("http://localhost:8080")
+                        .id("openapi")
+                )
                 .build();
     }
 
