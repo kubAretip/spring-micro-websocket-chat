@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -51,9 +52,12 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     if (StringUtils.isEmpty(time)) {
                         return Mono.error(new InvalidDataException("Can not save message with empty date"));
                     }
-
-                    var localDateTime = LocalDateTime.parse(time, DateTimeFormatter.ofPattern(DateConstants.UTC_DATE_FORMAT));
-                    chatMessage.setTime(Date.from(localDateTime.toInstant(ZoneOffset.UTC)));
+                    try {
+                        var localDateTime = LocalDateTime.parse(time, DateTimeFormatter.ofPattern(DateConstants.UTC_DATE_FORMAT));
+                        chatMessage.setTime(Date.from(localDateTime.toInstant(ZoneOffset.UTC)));
+                    } catch (DateTimeParseException ex) {
+                        return Mono.error(new InvalidDataException("Time format should be in UTC"));
+                    }
                     chatMessage.setStatus(MessageStatus.RECEIVED);
                     chatMessage.setContent(content);
                     chatMessage.setFriendChat(friendChat);
