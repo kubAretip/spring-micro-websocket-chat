@@ -9,7 +9,6 @@ import pl.kubaretip.chatmessagesservice.constant.DateConstants;
 import pl.kubaretip.chatmessagesservice.constant.MessageStatus;
 import pl.kubaretip.chatmessagesservice.document.ChatMessage;
 import pl.kubaretip.chatmessagesservice.repository.ChatMessageRepository;
-import pl.kubaretip.chatmessagesservice.security.SecurityUtils;
 import pl.kubaretip.chatmessagesservice.service.ChatMessageService;
 import pl.kubaretip.exceptionutils.InvalidDataException;
 import reactor.core.publisher.Flux;
@@ -101,11 +100,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public Mono<Void> setDeliveredStatusForAllRecipientMessagesInFriendChat(long friendChatId) {
-
-        return SecurityUtils.getCurrentUser()
-                .flatMapMany(recipientId -> chatMessageRepository.findByFriendChatAndRecipientAndStatus(friendChatId,
-                        recipientId, MessageStatus.RECEIVED))
+    public Mono<Void> setDeliveredStatusForAllRecipientMessagesInFriendChat(long friendChatId, String currentUser) {
+        return chatMessageRepository.findByFriendChatAndRecipientAndStatus(friendChatId, currentUser, MessageStatus.RECEIVED)
                 .doOnNext(chatMessage -> chatMessage.setStatus(MessageStatus.DELIVERED))
                 .flatMap(chatMessageRepository::save)
                 .then();

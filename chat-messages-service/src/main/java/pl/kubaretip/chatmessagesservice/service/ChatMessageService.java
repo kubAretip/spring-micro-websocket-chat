@@ -11,7 +11,7 @@ public interface ChatMessageService {
 
     Flux<ChatMessage> getLastUserMessages(long friendChatId1, long friendChatId2, int numberOfMessagesToFetch);
 
-    Mono<Void> setDeliveredStatusForAllRecipientMessagesInFriendChat(long friendChatId);
+    Mono<Void> setDeliveredStatusForAllRecipientMessagesInFriendChat(long friendChatId, String currentUser);
 
     Mono<ChatMessage> saveChatMessage(Long friendChat, String sender, String recipient, String content, String time);
 }
