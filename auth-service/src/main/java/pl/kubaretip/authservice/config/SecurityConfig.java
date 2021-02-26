@@ -1,5 +1,6 @@
 package pl.kubaretip.authservice.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
@@ -23,6 +24,7 @@ import pl.kubaretip.authutils.jwt.JWTUtils;
 @Import(SecurityProblemSupport.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final ObjectMapper objectMapper;
     private final SecurityProblemSupport problemSupport;
     private static final String[] SWAGGER_AUTH_WHITELIST = {
             "/v3/api-docs/**",
@@ -31,8 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-ui.html"
     };
 
-    public SecurityConfig(SecurityProblemSupport problemSupport) {
+    public SecurityConfig(SecurityProblemSupport problemSupport,
+                          ObjectMapper objectMapper) {
         this.problemSupport = problemSupport;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -68,8 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JWTAuthenticationFilter authenticationFilter() throws Exception {
         var filter = new JWTAuthenticationFilter();
-        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwtBuilder()));
-        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler());
+        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwtBuilder(), objectMapper));
+        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler(objectMapper));
         filter.setAuthenticationManager(super.authenticationManager());
         filter.setFilterProcessesUrl(jwtConfig().getAuthEndpoint());
         return filter;
