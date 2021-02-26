@@ -11,6 +11,7 @@ import pl.kubaretip.chatmessagesservice.document.ChatMessage;
 import pl.kubaretip.chatmessagesservice.repository.ChatMessageRepository;
 import pl.kubaretip.chatmessagesservice.security.SecurityUtils;
 import pl.kubaretip.chatmessagesservice.service.ChatMessageService;
+import pl.kubaretip.exceptionutils.InvalidDataException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -36,19 +37,19 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         return Mono.just(new ChatMessage())
                 .flatMap(chatMessage -> {
                     if (StringUtils.isEmpty(content)) {
-                        return Mono.error(new RuntimeException("Can not save empty message"));
+                        return Mono.error(new InvalidDataException("Can not save empty message"));
                     }
 
                     if (friendChat == null) {
-                        return Mono.error(new RuntimeException("Can not save message with empty friend chat field"));
+                        return Mono.error(new InvalidDataException("Can not save message with empty friend chat field"));
                     }
 
                     if (StringUtils.isEmpty(sender) || StringUtils.isEmpty(recipient)) {
-                        return Mono.error(new RuntimeException("Can not save message with empty sender or recipient"));
+                        return Mono.error(new InvalidDataException("Can not save message with empty sender or recipient"));
                     }
 
                     if (StringUtils.isEmpty(time)) {
-                        return Mono.error(new RuntimeException("Can not save message with empty date"));
+                        return Mono.error(new InvalidDataException("Can not save message with empty date"));
                     }
 
                     var localDateTime = LocalDateTime.parse(time, DateTimeFormatter.ofPattern(DateConstants.UTC_DATE_FORMAT));
