@@ -46,7 +46,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     }
 
                     if (StringUtils.isEmpty(sender) || StringUtils.isEmpty(recipient)) {
-                        return Mono.error(new InvalidDataException("Can not save message with empty sender or recipient"));
+                        return Mono.error(new InvalidDataException("Can not save message with empty sender or " +
+                                "recipient"));
                     }
 
                     if (StringUtils.isEmpty(time)) {
@@ -72,12 +73,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     public Flux<ChatMessage> findLastUsersMessagesFromTime(long firstUserFriendChatId, long secondUserFriendChatId,
                                                            String beforeTime, int numberOfMessagesToFetch) {
 
-        return Flux.just(beforeTime)
+        return Mono.just(beforeTime)
                 .flatMap(beforeTimeInString -> {
-                    var localDateTime = LocalDateTime.parse(beforeTime, DateTimeFormatter.ofPattern(DateConstants.UTC_DATE_FORMAT));
-                    return Mono.just(Date.from(localDateTime.toInstant(ZoneOffset.UTC)));
+                    try {
+                        var localDateTime = LocalDateTime.parse(beforeTime, DateTimeFormatter.ofPattern(DateConstants.UTC_DATE_FORMAT));
+                        return Mono.just(Date.from(localDateTime.toInstant(ZoneOffset.UTC)));
+                    } catch (DateTimeParseException ex) {
+                        return Mono.error(new InvalidDataException("Time format should be in UTC"));
+                    }
                 })
-                .flatMap(formattedDate -> {
+                .flatMapMany(formattedDate -> {
                             var sortedByTimeDescWithSize = PageRequest.of(0, numberOfMessagesToFetch, Sort.by("time").descending());
                             return chatMessageRepository
                                     .findByTimeLessThanAndFriendChatIn(
