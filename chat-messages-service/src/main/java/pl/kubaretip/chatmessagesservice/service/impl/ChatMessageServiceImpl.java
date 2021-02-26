@@ -8,11 +8,9 @@ import org.springframework.stereotype.Service;
 import pl.kubaretip.chatmessagesservice.constant.DateConstants;
 import pl.kubaretip.chatmessagesservice.constant.MessageStatus;
 import pl.kubaretip.chatmessagesservice.document.ChatMessage;
-import pl.kubaretip.chatmessagesservice.mapper.ChatMessageMapper;
 import pl.kubaretip.chatmessagesservice.repository.ChatMessageRepository;
 import pl.kubaretip.chatmessagesservice.security.SecurityUtils;
 import pl.kubaretip.chatmessagesservice.service.ChatMessageService;
-import pl.kubaretip.dtomodels.ChatMessageDTO;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -27,37 +25,40 @@ import java.util.List;
 public class ChatMessageServiceImpl implements ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
-    private final ChatMessageMapper chatMessageMapper;
 
-    public ChatMessageServiceImpl(ChatMessageRepository chatMessageRepository,
-                                  ChatMessageMapper chatMessageMapper) {
+    public ChatMessageServiceImpl(ChatMessageRepository chatMessageRepository) {
         this.chatMessageRepository = chatMessageRepository;
-        this.chatMessageMapper = chatMessageMapper;
     }
 
     @Override
-    public Mono<ChatMessage> saveChatMessage(ChatMessageDTO chatMessageDTO) {
+    public Mono<ChatMessage> saveChatMessage(Long friendChat, String sender, String recipient, String content, String time) {
 
-        return Mono.just(chatMessageDTO)
-                .flatMap(messageDTO -> {
-
-                    if (!StringUtils.isNotEmpty(messageDTO.getContent())) {
+        return Mono.just(new ChatMessage())
+                .flatMap(chatMessage -> {
+                    if (StringUtils.isEmpty(content)) {
                         return Mono.error(new RuntimeException("Can not save empty message"));
                     }
 
-                    if (messageDTO.getFriendChat() == null) {
+                    if (friendChat == null) {
                         return Mono.error(new RuntimeException("Can not save message with empty friend chat field"));
                     }
 
-                    if (!StringUtils.isNotEmpty(messageDTO.getSender()) || !StringUtils.isNotEmpty(messageDTO.getRecipient())) {
+                    if (StringUtils.isEmpty(sender) || StringUtils.isEmpty(recipient)) {
                         return Mono.error(new RuntimeException("Can not save message with empty sender or recipient"));
                     }
 
-                    if (!StringUtils.isNotEmpty(messageDTO.getTime())) {
+                    if (StringUtils.isEmpty(time)) {
                         return Mono.error(new RuntimeException("Can not save message with empty date"));
                     }
-                    chatMessageDTO.setStatus(MessageStatus.RECEIVED.name());
-                    return Mono.just(chatMessageMapper.mapToChatMessage(messageDTO));
+
+                    var localDateTime = LocalDateTime.parse(time, DateTimeFormatter.ofPattern(DateConstants.UTC_DATE_FORMAT));
+                    chatMessage.setTime(Date.from(localDateTime.toInstant(ZoneOffset.UTC)));
+                    chatMessage.setStatus(MessageStatus.RECEIVED);
+                    chatMessage.setContent(content);
+                    chatMessage.setFriendChat(friendChat);
+                    chatMessage.setRecipient(recipient);
+                    chatMessage.setSender(sender);
+                    return Mono.just(chatMessage);
                 })
                 .flatMap(chatMessageRepository::save);
     }

@@ -16,7 +16,11 @@ public class RabbitMessageStoringListener {
 
     @RabbitListener(queues = "#{messageStoringQueue.name}")
     public void receiveNewChatMessage(ChatMessageDTO chatMessageDTO) {
-        chatMessageService.saveChatMessage(chatMessageDTO).subscribe();
+        chatMessageService.saveChatMessage(chatMessageDTO.getFriendChat(),
+                chatMessageDTO.getSender(),
+                chatMessageDTO.getRecipient(),
+                chatMessageDTO.getContent(),
+                chatMessageDTO.getTime()).subscribe();
     }
 
 }
