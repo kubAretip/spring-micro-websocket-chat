@@ -22,7 +22,7 @@ public class MailServiceImpl implements SendMailService {
     private final JavaMailSender sender;
     private final TemplateEngine templateEngine;
 
-    @Value("${mail.baseUrl:none}")
+    @Value("${mail.links.baseUrl:none}")
     private String baseMailProcessingUrl;
 
     public MailServiceImpl(JavaMailSender sender,
