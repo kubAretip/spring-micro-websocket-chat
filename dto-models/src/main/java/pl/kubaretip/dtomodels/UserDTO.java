@@ -30,11 +30,13 @@ public class UserDTO implements Serializable {
     @Size(min = 6, max = 32)
     private String password;
 
-    @Size(max = 50)
+    @Pattern(regexp = "^[a-zA-Z]*$")
+    @Size(min = 2, max = 50)
     @NotBlank
     private String firstName;
 
-    @Size(max = 50)
+    @Pattern(regexp = "^[a-zA-Z]*$")
+    @Size(min = 2, max = 50)
     @NotBlank
     private String lastName;
 
