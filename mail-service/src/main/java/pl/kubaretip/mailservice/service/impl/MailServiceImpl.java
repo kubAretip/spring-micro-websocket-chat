@@ -25,6 +25,9 @@ public class MailServiceImpl implements SendMailService {
     @Value("${mail.links.baseUrl:none}")
     private String baseMailProcessingUrl;
 
+    @Value("${mail.links.activation-resource-path:}")
+    private String userActivationResourcePath;
+
     public MailServiceImpl(JavaMailSender sender,
                            TemplateEngine templateEngine) {
         this.sender = sender;
@@ -56,7 +59,7 @@ public class MailServiceImpl implements SendMailService {
         if (userEmail != null) {
             log.debug("Sending email template to {}", userEmail);
 
-            var activationLink = baseMailProcessingUrl + "?data=" + user.getActivationKey();
+            var activationLink = baseMailProcessingUrl + userActivationResourcePath + user.getActivationKey();
             var context = new Context();
             context.setVariable("user", user);
             context.setVariable("activationUrl", activationLink);
