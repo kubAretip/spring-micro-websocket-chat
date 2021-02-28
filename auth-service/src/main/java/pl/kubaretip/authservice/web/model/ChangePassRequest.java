@@ -16,6 +16,9 @@ public class ChangePassRequest {
     @NotBlank
     @Size(min = ApplicationConstants.USER_PASSWORD_MIN_LENGTH, max = ApplicationConstants.USER_PASSWORD_MIN_LENGTH)
     private String currentPassword;
+
+    @NotBlank
+    @Size(min = ApplicationConstants.USER_PASSWORD_MIN_LENGTH, max = ApplicationConstants.USER_PASSWORD_MIN_LENGTH)
     private String newPassword;
 
 }
