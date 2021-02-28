@@ -27,9 +27,10 @@ public class ChatProfileController {
     }
 
     @PatchMapping("/{id}/new-friends-request-code")
-    public ResponseEntity<Void> generateNewFriendsRequestCode(@PathVariable("id") String userId) {
-        chatProfileService.generateNewFriendsRequestCode(userId, SecurityUtils.getCurrentUserPreferredUsername());
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ChatProfileDTO> generateNewFriendsRequestCode(@PathVariable("id") String userId) {
+        var chatProfile = chatProfileService.generateNewFriendsRequestCode(userId, SecurityUtils.getCurrentUserPreferredUsername());
+        return ResponseEntity.ok()
+                .body(chatProfileMapper.chatProfileToChatProfileDTO(chatProfile));
     }
 
 

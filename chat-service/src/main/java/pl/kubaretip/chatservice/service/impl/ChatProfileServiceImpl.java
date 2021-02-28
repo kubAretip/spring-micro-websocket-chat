@@ -40,7 +40,7 @@ public class ChatProfileServiceImpl implements ChatProfileService {
     }
 
     @Override
-    public void generateNewFriendsRequestCode(String userId, String username) {
+    public ChatProfile generateNewFriendsRequestCode(String userId, String username) {
         var chatProfile = getChatProfileById(userId);
 
         if (!chatProfile.getUserId().toString().equals(SecurityUtils.getCurrentUser())) {
@@ -48,7 +48,7 @@ public class ChatProfileServiceImpl implements ChatProfileService {
         }
 
         chatProfile.setFriendsRequestCode(generateFriendRequestCode(username));
-        chatProfileRepository.save(chatProfile);
+        return chatProfileRepository.save(chatProfile);
     }
 
     private String generateFriendRequestCode(String username) {
