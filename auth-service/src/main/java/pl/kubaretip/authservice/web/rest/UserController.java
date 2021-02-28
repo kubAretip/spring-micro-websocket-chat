@@ -3,13 +3,16 @@ package pl.kubaretip.authservice.web.rest;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.authservice.mapper.UserMapper;
 import pl.kubaretip.authservice.messaging.sender.UserSender;
 import pl.kubaretip.authservice.service.UserService;
 import pl.kubaretip.authservice.web.model.ChangePassRequest;
+import pl.kubaretip.authutils.security.SecurityUserDetails;
 import pl.kubaretip.dtomodels.UserDTO;
+import pl.kubaretip.exceptionutils.InvalidDataException;
 
 import javax.validation.Valid;
 
@@ -66,8 +69,13 @@ public class UserController {
 
     @PatchMapping("/{id}/change-password")
     public ResponseEntity<Void> changeUserPassword(@PathVariable("id") String userId,
-                                                   @Valid @RequestBody ChangePassRequest request) {
-        userService.changeUserPassword(userId, request.getCurrentPassword(), request.getNewPassword());
+                                                   @Valid @RequestBody ChangePassRequest request,
+                                                   Authentication authentication) {
+        var currentUser = (SecurityUserDetails) authentication.getPrincipal();
+        if (!userId.equals(currentUser.getId())) {
+            throw new InvalidDataException("Invalid user id");
+        }
+        userService.changeUserPassword(currentUser.getId(), request.getCurrentPassword(), request.getNewPassword());
         return ResponseEntity.noContent().build();
     }
 
