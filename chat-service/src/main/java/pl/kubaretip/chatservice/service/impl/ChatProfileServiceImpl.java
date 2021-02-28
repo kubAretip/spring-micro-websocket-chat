@@ -41,8 +41,7 @@ public class ChatProfileServiceImpl implements ChatProfileService {
 
     @Override
     public void generateNewFriendsRequestCode(String userId, String username) {
-        var chatProfile = chatProfileRepository.findById(UUID.fromString(userId))
-                .orElseThrow(() -> new NotFoundException("Not found chat profile for user " + userId));
+        var chatProfile = getChatProfileById(userId);
 
         if (!chatProfile.getUserId().toString().equals(SecurityUtils.getCurrentUser())) {
             throw new InvalidDataException("Invalid user id");
@@ -54,6 +53,12 @@ public class ChatProfileServiceImpl implements ChatProfileService {
 
     private String generateFriendRequestCode(String username) {
         return username.toLowerCase() + "-" + RandomStringUtils.randomNumeric(10);
+    }
+
+    @Override
+    public ChatProfile getChatProfileById(String userId) {
+        return chatProfileRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new NotFoundException("Not found chat profile for user " + userId));
     }
 
 
