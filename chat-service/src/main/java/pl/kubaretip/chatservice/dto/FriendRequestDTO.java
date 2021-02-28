@@ -10,12 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FriendDTO {
+public class FriendRequestDTO {
 
     private Long id;
     private String sentTime;
     private ChatProfileDTO sender;
     private ChatProfileDTO recipient;
-    private String friendsRequestStatus;
-
 }

@@ -1,8 +1,8 @@
 package pl.kubaretip.chatservice.dto.mapper;
 
 import org.mapstruct.*;
-import pl.kubaretip.chatservice.domain.Friend;
-import pl.kubaretip.chatservice.dto.FriendDTO;
+import pl.kubaretip.chatservice.domain.FriendRequest;
+import pl.kubaretip.chatservice.dto.FriendRequestDTO;
 import pl.kubaretip.chatservice.util.DateUtils;
 
 import java.time.OffsetDateTime;
@@ -11,28 +11,28 @@ import java.util.List;
 
 
 @Mapper(componentModel = "spring", uses = ChatProfileMapper.class)
-public interface FriendMapper {
+public interface FriendRequestMapper {
 
     @Mapping(target = "sender", qualifiedByName = "chatProfileToChatProfileDTO")
     @Mapping(target = "recipient", qualifiedByName = "chatProfileToChatProfileDTO")
-    @Mapping(target = "sentTime", expression = "java(convertOffsetDateToString(friend.getSentTime()))")
-    FriendDTO mapToFriendDTO(Friend friend);
+    @Mapping(target = "sentTime", expression = "java(convertOffsetDateToString(friendRequest.getSentTime()))")
+    FriendRequestDTO mapToFriendRequestDTO(FriendRequest friendRequest);
 
     @Named("mapWithoutRecipient")
-    @InheritConfiguration(name = "mapToFriendDTO")
+    @InheritConfiguration(name = "mapToFriendRequestDTO")
     @Mapping(target = "recipient", ignore = true)
-    FriendDTO mapToFriendDTOWithoutRecipient(Friend friend);
+    FriendRequestDTO mapToFriendRequestDTOWithoutRecipient(FriendRequest friendRequest);
 
     @Named("mapWithoutSender")
-    @InheritConfiguration(name = "mapToFriendDTO")
+    @InheritConfiguration(name = "mapToFriendRequestDTO")
     @Mapping(target = "sender", ignore = true)
-    FriendDTO mapToFriendDTOWithoutSender(Friend friend);
+    FriendRequestDTO mapToFriendRequestDTOWithoutSender(FriendRequest friendRequest);
 
     @IterableMapping(qualifiedByName = "mapWithoutRecipient")
-    List<FriendDTO> mapToFriendDTOListWithoutRecipient(List<Friend> friends);
+    List<FriendRequestDTO> mapToFriendRequestDTOListWithoutRecipient(List<FriendRequest> friendRequests);
 
     @IterableMapping(qualifiedByName = "mapWithoutSender")
-    List<FriendDTO> mapToFriendDTOListWithoutSender(List<Friend> friends);
+    List<FriendRequestDTO> mapToFriendRequestDTOListWithoutSender(List<FriendRequest> friendRequests);
 
 
     default String convertOffsetDateToString(OffsetDateTime time) {

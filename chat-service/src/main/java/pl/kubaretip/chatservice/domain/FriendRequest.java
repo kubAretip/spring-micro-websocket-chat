@@ -1,23 +1,21 @@
 package pl.kubaretip.chatservice.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import pl.kubaretip.chatservice.constants.FriendStatus;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
 
 
 @Table(schema = "chat_service_database",
+        name = "friend_request",
         uniqueConstraints = @UniqueConstraint(columnNames = {"sender_chat_profile_id", "recipient_chat_profile_id"}))
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Friend {
+public class FriendRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +32,7 @@ public class Friend {
     @JoinColumn(name = "recipient_chat_profile_id", nullable = false)
     private ChatProfile recipient;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "friends_request_status")
-    private FriendStatus friendsRequestStatus;
+    @Column(nullable = false, name = "is_accepted")
+    private boolean isAccepted = false;
 
 }
