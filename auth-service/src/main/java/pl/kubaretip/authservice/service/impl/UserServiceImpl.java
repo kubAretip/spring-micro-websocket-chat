@@ -116,11 +116,11 @@ public class UserServiceImpl implements UserService {
         throwExceptionIfNotCurrentUser(user);
 
         if (isNotEmpty(firstName)) {
-            user.setFirstName(StringUtils.capitalize(firstName.toLowerCase()));
+            user.setFirstName(StringUtils.capitalize(firstName.toLowerCase().replaceAll(" ", "")));
         }
 
         if (isNotEmpty(lastName)) {
-            user.setFirstName(StringUtils.capitalize(lastName.toLowerCase()));
+            user.setLastName(StringUtils.capitalize(lastName.toLowerCase().replaceAll(" ", "")));
         }
 
         return userRepository.save(user);
