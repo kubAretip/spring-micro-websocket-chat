@@ -14,8 +14,11 @@ import javax.validation.constraints.Size;
 public class ChangePassRequest {
 
     @NotBlank
-    @Size(min = ApplicationConstants.USER_PASSWORD_MIN_LENGTH, max = ApplicationConstants.USER_PASSWORD_MIN_LENGTH)
+    @Size(min = ApplicationConstants.USER_PASSWORD_MIN_LENGTH, max = ApplicationConstants.USER_PASSWORD_MAX_LENGTH)
     private String currentPassword;
+
+    @NotBlank
+    @Size(min = ApplicationConstants.USER_PASSWORD_MIN_LENGTH, max = ApplicationConstants.USER_PASSWORD_MAX_LENGTH)
     private String newPassword;
 
 }

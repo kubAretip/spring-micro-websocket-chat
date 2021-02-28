@@ -23,7 +23,6 @@ public class CustomExceptionHandler {
                 .withStatus(Status.NOT_FOUND)
                 .withDetail(ex.getLocalizedMessage())
                 .withTitle(Status.NOT_FOUND.getReasonPhrase())
-                .withType(URI.create(request.getContextPath()))
                 .build();
     }
 
@@ -34,7 +33,6 @@ public class CustomExceptionHandler {
                 .withStatus(Status.CONFLICT)
                 .withDetail(ex.getLocalizedMessage())
                 .withTitle(Status.CONFLICT.getReasonPhrase())
-                .withType(URI.create(request.getContextPath()))
                 .build();
     }
 
@@ -45,7 +43,6 @@ public class CustomExceptionHandler {
                 .withStatus(Status.BAD_REQUEST)
                 .withDetail(ex.getLocalizedMessage())
                 .withTitle(Status.BAD_REQUEST.getReasonPhrase())
-                .withType(URI.create(request.getContextPath()))
                 .build();
     }
 
