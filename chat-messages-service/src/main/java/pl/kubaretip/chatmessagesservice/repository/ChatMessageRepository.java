@@ -5,9 +5,11 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import pl.kubaretip.chatmessagesservice.constant.MessageStatus;
 import pl.kubaretip.chatmessagesservice.document.ChatMessage;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 
 public interface ChatMessageRepository extends ReactiveCrudRepository<ChatMessage, String> {
@@ -18,4 +20,5 @@ public interface ChatMessageRepository extends ReactiveCrudRepository<ChatMessag
 
     Flux<ChatMessage> findByFriendChatAndRecipientAndStatus(long friendChatId, String userId, MessageStatus status);
 
+    Mono<Void> deleteByFriendChatIn(List<Long> ids);
 }

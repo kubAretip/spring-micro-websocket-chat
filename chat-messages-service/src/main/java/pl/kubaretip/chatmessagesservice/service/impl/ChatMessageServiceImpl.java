@@ -107,4 +107,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .then();
     }
 
+    @Override
+    public Mono<Void> removeMessagesByFriendChat(List<Long> ids) {
+        return chatMessageRepository.deleteByFriendChatIn(ids);
+    }
+
 }
