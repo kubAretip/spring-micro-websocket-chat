@@ -3,6 +3,10 @@
 ### Repository with configuration files
 * https://github.com/kubAretip/spring-micro-websocket-chat-config
 
+### Repository with front-end
+* https://github.com/kubAretip/chat-me-angular
+
+
 This project creates a complete micro service chat system in Docker containers. The services are implemented in Java using Spring, Spring Cloud and RabbitMQ.
 It uses 5 microservices:
 * Mail service 
