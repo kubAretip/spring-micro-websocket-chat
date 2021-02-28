@@ -84,7 +84,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
                         throw new InvalidDataException("You can't cancel friend request because you aren't the owner");
                     }
 
-                    if (!friendRequest.isAccepted()) {
+                    if (friendRequest.isAccepted()) {
                         throw new InvalidDataException("Friend request already accepted.");
                     }
                     friendRequestRepository.delete(friendRequest);
