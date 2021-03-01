@@ -1,22 +1,20 @@
 package pl.kubaretip.authservice.mapper;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.kubaretip.authservice.domain.User;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {UserMapperImpl.class})
 public class UserMapperImplTest {
 
+    private static UserMapperImpl userMapper;
 
-    @Autowired
-    private UserMapper userMapper;
+    @BeforeAll
+    public static void setup() {
+        userMapper = new UserMapperImpl();
+    }
 
     @Test
     public void shouldIgnorePasswordWhenMappingToDTO() {
