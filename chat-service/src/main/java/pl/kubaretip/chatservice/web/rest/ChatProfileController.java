@@ -6,6 +6,7 @@ import pl.kubaretip.authutils.SecurityUtils;
 import pl.kubaretip.chatservice.dto.ChatProfileDTO;
 import pl.kubaretip.chatservice.dto.mapper.ChatProfileMapper;
 import pl.kubaretip.chatservice.service.ChatProfileService;
+import pl.kubaretip.exceptionutils.InvalidDataException;
 
 @RestController
 @RequestMapping("/chat-profiles")
@@ -28,6 +29,10 @@ public class ChatProfileController {
 
     @PatchMapping("/{id}/new-friends-request-code")
     public ResponseEntity<ChatProfileDTO> generateNewFriendsRequestCode(@PathVariable("id") String userId) {
+
+        if (!userId.equals(SecurityUtils.getCurrentUser())) {
+            throw new InvalidDataException("Invalid user id");
+        }
         var chatProfile = chatProfileService.generateNewFriendsRequestCode(userId, SecurityUtils.getCurrentUserPreferredUsername());
         return ResponseEntity.ok()
                 .body(chatProfileMapper.chatProfileToChatProfileDTO(chatProfile));
