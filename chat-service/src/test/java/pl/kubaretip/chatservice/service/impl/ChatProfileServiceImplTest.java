@@ -13,6 +13,7 @@ import pl.kubaretip.exceptionutils.NotFoundException;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -66,15 +67,15 @@ public class ChatProfileServiceImplTest {
     @Test
     public void shouldCreateNewChatProfile() {
         // given
-        var userId = "44e22efe-ed49-470a-99f0-f0bfc698629b";
+        var userId = randomUUID();
         var username = "username";
         given(chatProfileRepository.save(any(ChatProfile.class))).willAnswer(returnsFirstArg());
 
         // when
-        var result = chatProfileService.createChatProfile(userId, username);
+        var result = chatProfileService.createChatProfile(userId.toString(), username);
 
         // then
-        assertThat(result.getUserId().toString(), is(equalTo(userId)));
+        assertThat(result.getUserId(), is(equalTo(userId)));
         // assertThat(result.getFriendsRequestCode(), is(equalTo(username)));
 
         verify(chatProfileRepository, times(1)).save(any());
@@ -84,12 +85,11 @@ public class ChatProfileServiceImplTest {
     @Test
     public void friendsRequestCodeForNewChatProfileShouldStartWithUsername() {
         // given
-        var userId = "44e22efe-ed49-470a-99f0-f0bfc698629b";
         var username = "username";
         given(chatProfileRepository.save(any(ChatProfile.class))).willAnswer(returnsFirstArg());
 
         // when
-        var result = chatProfileService.createChatProfile(userId, username);
+        var result = chatProfileService.createChatProfile(randomUUID().toString(), username);
 
         // then
         assertThat(result.getFriendsRequestCode(), is(notNullValue()));
@@ -100,17 +100,17 @@ public class ChatProfileServiceImplTest {
     @Test
     public void shouldRegenerateFriendCode() {
         // given
-        var userId = "44e22efe-ed49-470a-99f0-f0bfc698629b";
+        var userId = randomUUID();
         var username = "test";
         var friendsRequestCode = "123";
         var chatProfile = new ChatProfile();
-        chatProfile.setUserId(UUID.fromString(userId));
+        chatProfile.setUserId(userId);
         chatProfile.setFriendsRequestCode(friendsRequestCode);
         given(chatProfileRepository.findById(any(UUID.class))).willReturn(Optional.of(chatProfile));
         given(chatProfileRepository.save(any(ChatProfile.class))).willAnswer(returnsFirstArg());
 
         // when
-        var result = chatProfileService.generateNewFriendsRequestCode(userId, username);
+        var result = chatProfileService.generateNewFriendsRequestCode(userId.toString(), username);
 
         // then
         assertThat(result.getFriendsRequestCode(), startsWith(username));
@@ -127,7 +127,7 @@ public class ChatProfileServiceImplTest {
         given(chatProfileRepository.findById(any(UUID.class))).willReturn(Optional.of(new ChatProfile()));
 
         // when
-        var result = chatProfileService.getChatProfileById("44e22efe-ed49-470a-99f0-f0bfc698629b");
+        var result = chatProfileService.getChatProfileById(randomUUID().toString());
 
         // then
         assertThat(result, is(notNullValue()));
@@ -142,7 +142,7 @@ public class ChatProfileServiceImplTest {
 
         // when + then
         assertThrows(NotFoundException.class,
-                () -> chatProfileService.getChatProfileById("44e22efe-ed49-470a-99f0-f0bfc698629b"));
+                () -> chatProfileService.getChatProfileById(randomUUID().toString()));
     }
 
 
