@@ -6,6 +6,8 @@ import pl.kubaretip.chatservice.domain.ChatProfile;
 import pl.kubaretip.chatservice.domain.FriendChat;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface FriendChatRepository extends JpaRepository<FriendChat, Long> {
 
@@ -18,6 +20,14 @@ public interface FriendChatRepository extends JpaRepository<FriendChat, Long> {
 
 
     List<FriendChat> findBySender(ChatProfile sender);
+
+
+    @Query("SELECT fc from FriendChat fc WHERE fc.id = :friendChatId " +
+            "AND fc.chatWith.id = :friendChatWithId " +
+            "AND fc.sender.userId = :senderId")
+    Optional<FriendChat> findByIdAndFriendChatWithIdAndSenderId(long friendChatId,
+                                                                long friendChatWithId,
+                                                                UUID senderId);
 
 
 }

@@ -11,6 +11,8 @@ public class RabbitMQConfig {
     private static final String MESSAGE_STORING_EXCHANGE = "pl.kubaretip.chatmessagesservice.fanout";
     private static final String MESSAGE_STORING_DLQ = MESSAGE_STORING_QUEUE + ".dlq";
     private static final String MESSAGE_STORING_DLE = MESSAGE_STORING_QUEUE + ".dlx";
+    private static final String MESSAGE_DELETING_QUEUE = "pl.kubaretip.chatmessagesservice.deleting";
+    private static final String MESSAGE_DELETING_EXCHANGE = "pl.kubaretip.chatmessagesservice.fanout.deleting";
 
     @Bean
     public FanoutExchange messageStoringExchange() {
@@ -27,6 +29,21 @@ public class RabbitMQConfig {
     @Bean
     public Binding messageStoringBinding(Queue messageStoringQueue, FanoutExchange messageStoringExchange) {
         return BindingBuilder.bind(messageStoringQueue).to(messageStoringExchange);
+    }
+
+    @Bean
+    public FanoutExchange messageDeletingExchange() {
+        return new FanoutExchange(MESSAGE_DELETING_EXCHANGE);
+    }
+
+    @Bean
+    public Queue messageDeletingQueue() {
+        return QueueBuilder.durable(MESSAGE_DELETING_QUEUE).build();
+    }
+
+    @Bean
+    public Binding messageDeletingBinding(Queue messageDeletingQueue, FanoutExchange messageDeletingExchange) {
+        return BindingBuilder.bind(messageDeletingQueue).to(messageDeletingExchange);
     }
 
     @Bean

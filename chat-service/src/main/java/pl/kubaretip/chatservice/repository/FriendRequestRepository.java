@@ -1,6 +1,7 @@
 package pl.kubaretip.chatservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import pl.kubaretip.chatservice.domain.ChatProfile;
 import pl.kubaretip.chatservice.domain.FriendRequest;
@@ -21,5 +22,10 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
 
     @Query("SELECT fr FROM FriendRequest fr WHERE fr.sender.userId = :senderId AND fr.isAccepted = false")
     List<FriendRequest> findAllBySenderIdAndNotAccepted(UUID senderId);
+
+    @Modifying
+    @Query("DELETE FROM FriendRequest WHERE (sender = :sender AND recipient = :recipient) " +
+            "OR (sender = :recipient AND recipient = :sender)")
+    void deleteFriendRequestByChatProfiles(ChatProfile sender, ChatProfile recipient);
 
 }
