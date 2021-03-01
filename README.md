@@ -39,7 +39,7 @@ You can run application on dev profile or run in docker profile.
 * Go to config-server/src/main/resources open bootstrap-docker.yml and remove properties ```ignore-local-ssh-settings: ```, ```host-key-algorithm:```, ```host-key:``` and ```private-key:```
 * Go to docker folder and open .env.docker. Next fill ```REPO_BRANCH=master``` and ```GIT_REPO_URI=```. Link to config repo below:
 https://github.com/kubAretip/spring-micro-websocket-chat-config
-* Go to docker folder and oper docker-compose-docker.yml. In services section find config-server and remove environments variables ```GIT_URI: ${GIT_REPO_URI}```,```HOST_KEY: ${KNOWN_HOST_KEY}```, ```PRIVATE_KEY: ${PEM}```
+* Go to docker folder and open <b>docker-compose-docker.yml</b>. In services section find <b>config-server</b> and remove environments variables: ```HOST_KEY: ${KNOWN_HOST_KEY}```, ```PRIVATE_KEY: ${PEM}```
 
 #### 3. Package
 * In spring-micro-websocket-chat run ```mvn clean package```
