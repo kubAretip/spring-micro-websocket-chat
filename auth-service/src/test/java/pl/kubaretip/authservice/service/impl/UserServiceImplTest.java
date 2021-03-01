@@ -4,19 +4,17 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.kubaretip.authservice.domain.Authority;
 import pl.kubaretip.authservice.domain.User;
 import pl.kubaretip.authservice.repository.AuthorityRepository;
 import pl.kubaretip.authservice.repository.UserRepository;
-import pl.kubaretip.authservice.service.UserService;
 import pl.kubaretip.authutils.SecurityUtils;
 import pl.kubaretip.authutils.security.SecurityUserDetails;
 import pl.kubaretip.exceptionutils.AlreadyExistsException;
@@ -36,21 +34,20 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {UserServiceImpl.class})
+@ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
-    @MockBean
+    @Mock
     private UserRepository userRepository;
 
-    @MockBean
+    @Mock
     private PasswordEncoder passwordEncoder;
 
-    @MockBean
+    @Mock
     private AuthorityRepository authorityRepository;
 
-    @Autowired
-    private UserService userService;
+    @InjectMocks
+    private UserServiceImpl userService;
 
 
     @BeforeAll
@@ -335,8 +332,9 @@ public class UserServiceImplTest {
         var hashedPassword = "$2y$10$asOldpQaU2wLf/0VQFjO9OYJYQL4otL9OzsabsiJ7avOiIua5toVO";
         var user = new User();
         user.setId(UUID.fromString(SecurityUtils.getCurrentUser()));
+        user.setPassword(hashedPassword);
         given(userRepository.findById(any())).willReturn(Optional.of(user));
-        given(passwordEncoder.matches(purePassword, hashedPassword)).willReturn(false);
+        given(passwordEncoder.matches(anyString(), anyString())).willReturn(false);
 
         // then + when
         assertThrows(InvalidDataException.class, () -> userService.changeUserPassword(SecurityUtils.getCurrentUser(),
