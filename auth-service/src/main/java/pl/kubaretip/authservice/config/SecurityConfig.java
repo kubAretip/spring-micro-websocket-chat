@@ -1,16 +1,16 @@
 package pl.kubaretip.authservice.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import pl.kubaretip.authservice.security.AuthenticationFailureHandler;
 import pl.kubaretip.authservice.security.AuthenticationSuccessHandler;
 import pl.kubaretip.authservice.security.JWTAuthenticationFilter;
@@ -21,23 +21,14 @@ import pl.kubaretip.authutils.jwt.JWTUtils;
 
 
 @EnableWebSecurity
-@Import(SecurityProblemSupport.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final ObjectMapper objectMapper;
-    private final SecurityProblemSupport problemSupport;
     private static final String[] SWAGGER_AUTH_WHITELIST = {
             "/v3/api-docs/**",
             "/swagger-resources/**",
             "/swagger-ui/**",
             "/swagger-ui.html"
     };
-
-    public SecurityConfig(SecurityProblemSupport problemSupport,
-                          ObjectMapper objectMapper) {
-        this.problemSupport = problemSupport;
-        this.objectMapper = objectMapper;
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -61,10 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated()
         .and()
             .exceptionHandling()
-            .authenticationEntryPoint(problemSupport)
-            .accessDeniedHandler(problemSupport)
+            .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+            .accessDeniedHandler(new AccessDeniedHandlerImpl())
         .and()
-            .addFilterAfter(new JWTFilter(jwtUtils()), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         // @formatter:on
     }
@@ -72,11 +63,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JWTAuthenticationFilter authenticationFilter() throws Exception {
         var filter = new JWTAuthenticationFilter();
-        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwtBuilder(), objectMapper));
-        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler(objectMapper));
+        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwtBuilder()));
+        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler());
         filter.setAuthenticationManager(super.authenticationManager());
         filter.setFilterProcessesUrl(jwtConfig().getAuthEndpoint());
         return filter;
+    }
+
+    @Bean
+    public JWTFilter jwtFilter() {
+        return new JWTFilter(jwtUtils());
     }
 
     @Bean

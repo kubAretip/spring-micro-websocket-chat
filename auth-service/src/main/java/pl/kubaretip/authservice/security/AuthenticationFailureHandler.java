@@ -1,11 +1,11 @@
 package pl.kubaretip.authservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
+import pl.kubaretip.exceptionutils.error.Error;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,12 +15,6 @@ import java.nio.charset.StandardCharsets;
 
 public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private final ObjectMapper objectMapper;
-
-    public AuthenticationFailureHandler(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -28,16 +22,14 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         var out = response.getWriter();
 
-        Problem problem = Problem.builder()
-                .withStatus(Status.UNAUTHORIZED)
-                .withDetail(exception.getLocalizedMessage())
-                .withTitle(Status.UNAUTHORIZED.getReasonPhrase())
+        var error = Error.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .detail(exception.getMessage())
+                .title(HttpStatus.UNAUTHORIZED.getReasonPhrase())
                 .build();
 
-        var jsonErrorResponse = objectMapper.writeValueAsString(problem);
+        var jsonErrorResponse = new ObjectMapper().writeValueAsString(error);
         out.print(jsonErrorResponse);
         out.flush();
     }
-
-
 }

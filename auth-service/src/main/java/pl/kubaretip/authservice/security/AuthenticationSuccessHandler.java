@@ -17,12 +17,9 @@ import java.nio.charset.StandardCharsets;
 public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTBuilder jwtBuilder;
-    private final ObjectMapper objectMapper;
 
-    public AuthenticationSuccessHandler(JWTBuilder jwtBuilder,
-                                        ObjectMapper objectMapper) {
+    public AuthenticationSuccessHandler(JWTBuilder jwtBuilder) {
         this.jwtBuilder = jwtBuilder;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -31,7 +28,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         var token = jwtBuilder.buildToken(authentication);
-        var tokenJson = objectMapper.writeValueAsString(new TokenResponse(token));
+        var tokenJson = new ObjectMapper().writeValueAsString(new TokenResponse(token));
         out.print(tokenJson);
         out.flush();
     }
