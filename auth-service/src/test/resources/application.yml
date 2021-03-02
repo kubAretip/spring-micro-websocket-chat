@@ -1,3 +1,0 @@
-logging:
-  level:
-    org.zalando.problem.spring.common.AdviceTraits: off

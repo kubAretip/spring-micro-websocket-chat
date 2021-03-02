@@ -11,20 +11,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.zalando.problem.ProblemModule;
-import org.zalando.problem.violations.ConstraintViolationProblemModule;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.kubaretip.authservice.domain.User;
 import pl.kubaretip.authservice.mapper.UserMapper;
 import pl.kubaretip.authservice.messaging.sender.UserSender;
 import pl.kubaretip.authservice.service.UserService;
 import pl.kubaretip.authservice.utils.JacksonIgnoreWriteOnlyAccess;
+import pl.kubaretip.authservice.utils.SpringSecurityWebTestConfig;
 import pl.kubaretip.dtomodels.UserDTO;
 import pl.kubaretip.exceptionutils.AlreadyExistsException;
 import pl.kubaretip.exceptionutils.InvalidDataException;
+import pl.kubaretip.exceptionutils.NotFoundException;
 
 import java.util.stream.Stream;
 
+import static java.util.UUID.randomUUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
@@ -36,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WebMvcTest(controllers = UserController.class)
+@ContextConfiguration(classes = SpringSecurityWebTestConfig.class)
 public class UserControllerTest {
 
     @Autowired
@@ -58,10 +64,9 @@ public class UserControllerTest {
     public void setup() {
         // ignore write only access in password field in UserDTO class
         objectMapper.setAnnotationIntrospector(new JacksonIgnoreWriteOnlyAccess());
-        objectMapper.registerModule(new ProblemModule());
-        objectMapper.registerModule(new ConstraintViolationProblemModule());
     }
 
+    @WithAnonymousUser
     @Test
     public void creatingNewUserShouldReturns200WhenValidInput() throws Exception {
         //given
@@ -80,7 +85,7 @@ public class UserControllerTest {
         verify(userSender, times(1)).send(any(UserDTO.class));
     }
 
-
+    @WithAnonymousUser
     @ParameterizedTest
     @MethodSource("invalidNewUsersSource")
     public void creatingNewUserShouldReturns400WhenInvalidInput(UserDTO input) throws Exception {
@@ -104,6 +109,7 @@ public class UserControllerTest {
         );
     }
 
+    @WithAnonymousUser
     @Test
     public void creatingNewUserShouldReturns400WhenServiceThrowInvalidDataException() throws Exception {
         // given
@@ -117,6 +123,7 @@ public class UserControllerTest {
         verify(userService, times(1)).createUser(any(), any(), any(), any(), any());
     }
 
+    @WithAnonymousUser
     @Test
     public void creatingNewUserShouldReturns409WhenServiceThrownAlreadyExists() throws Exception {
         // given
@@ -130,6 +137,7 @@ public class UserControllerTest {
         verify(userService, times(1)).createUser(any(), any(), any(), any(), any());
     }
 
+    @WithAnonymousUser
     @Test
     public void userActivationShouldReturns400WhenServiceThrownInvalidDate() throws Exception {
         // given
@@ -145,6 +153,7 @@ public class UserControllerTest {
         verify(userService, times(1)).activateUser(activationKey);
     }
 
+    @WithAnonymousUser
     @Test
     public void userActivationShouldReturns204WhenActivationSuccess() throws Exception {
         // given
@@ -156,6 +165,18 @@ public class UserControllerTest {
                 .param("data", activationKey))
                 .andExpect(status().isNoContent());
         verify(userService, times(1)).activateUser(activationKey);
+    }
+
+    @Test
+    @WithMockUser
+    public void getUserByIdShouldReturns404WhenUserNotFount() throws Exception {
+
+        // given
+        given(userService.findUserById(anyString())).willThrow(NotFoundException.class);
+
+        // when + then
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", randomUUID().toString()))
+                .andExpect(status().isNotFound());
     }
 
 
