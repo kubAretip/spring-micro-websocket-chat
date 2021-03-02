@@ -61,7 +61,7 @@ public class UserServiceImplTest {
         given(authentication.getPrincipal()).willReturn(securityUserDetails);
         given(securityContext.getAuthentication().getPrincipal()).willReturn(securityUserDetails);
 
-        // mocker user id security context
+        // mocking user id in security context
         given(securityUserDetails.getId()).willReturn("123e4567-e89b-12d3-a456-426614174000");
     }
 
