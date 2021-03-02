@@ -7,3 +7,14 @@ spring:
         max-attempts: 20
         initial-interval: 15000
         max-interval: 10000
+management:
+  endpoint:
+    restart:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - restart

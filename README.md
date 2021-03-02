@@ -49,5 +49,8 @@ https://github.com/kubAretip/spring-micro-websocket-chat-config
 * ... wait a moment, docker compose builds the docker images and runs them.
 * You can access the application at http://localhost:8080
 * Documentation with application endpoints is available on http://localhost:8080/swagger-ui.html
+PS-1 If you don't see anything in Swagger UI, you must restart the gateway. 
+It's happen because gateway has been in ready state before services, so gateway can't see Swagger endpoints from services.
+You can use Actuator to restart the gateway (POST  http://localhost:8080/actuator/restart).
 
 
