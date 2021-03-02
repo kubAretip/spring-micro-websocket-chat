@@ -2,10 +2,13 @@ package pl.kubaretip.chatservice.config;
 
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.kubaretip.authutils.jwt.JWTConfig;
 import pl.kubaretip.authutils.jwt.JWTFilter;
@@ -39,6 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
             .anyRequest()
             .authenticated()
+        .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+            .accessDeniedHandler(new AccessDeniedHandlerImpl())
         .and()
             .addFilterAfter(new JWTFilter(jwtUtils()), UsernamePasswordAuthenticationFilter.class);
 
