@@ -11,6 +11,10 @@
 
     <artifactId>dto-models</artifactId>
 
+    <properties>
+        <jackson-annotations.version>2.12.1</jackson-annotations.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -21,7 +25,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.12.1</version>
+            <version>${jackson-annotations.version}</version>
         </dependency>
 
     </dependencies>
