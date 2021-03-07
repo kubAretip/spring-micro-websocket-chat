@@ -32,7 +32,7 @@ You can run application on dev profile or run in docker profile.
 ## Steps to run in docker
 
 #### 1. Clone repository
-``` git clone git@github.com:kubAretip/spring-micro-websocket-chat.git ```
+``` git clone https://github.com/kubAretip/spring-micro-websocket-chat.git ```
 
 #### 2. Configuration time
 * In this moment repositories with configuration files is public so you must remove configuration for privates repositories.
