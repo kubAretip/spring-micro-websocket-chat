@@ -27,7 +27,10 @@ Requirements:
 * Install Maven, see https://maven.apache.org/download.cgi
 * Install Docker, see https://docs.docker.com/get-docker
 
-You can run application on dev profile or run in docker profile. 
+## Diagram
+<p align="center">
+  <img src="screenshot/diagram.png">
+</p>
 
 ## Steps to run in docker
 
