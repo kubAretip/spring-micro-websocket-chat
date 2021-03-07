@@ -6,4 +6,8 @@ orbs:
 workflows:
   maven_test:
     jobs:
-      - maven/test
+      - maven/test:
+          filters:
+            branches:
+              only:
+                - master
