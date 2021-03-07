@@ -1,5 +1,7 @@
 # Microservice chat application
 
+[![CircleCI](https://circleci.com/gh/kubAretip/spring-micro-websocket-chat/tree/master.svg?style=shield)](https://app.circleci.com/pipelines/github/kubAretip/spring-micro-websocket-chat)
+
 ### Repository with configuration files
 * https://github.com/kubAretip/spring-micro-websocket-chat-config
 
