@@ -1,2 +1,2 @@
-insert into authority (name)
+insert into auth_service_database.authority (name)
 VALUES ('ROLE_USER');

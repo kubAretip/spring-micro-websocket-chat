@@ -1,4 +1,4 @@
-create table if not exists user
+create table if not exists auth_service_database.user
 (
     id             binary(16)   not null primary key,
     username       varchar(50)  not null unique,

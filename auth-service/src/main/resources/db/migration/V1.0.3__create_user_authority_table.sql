@@ -1,4 +1,4 @@
-create table if not exists user_authority
+create table if not exists auth_service_database.user_authority
 (
     user_id        binary(16)  not null,
     authority_name varchar(50) not null,
