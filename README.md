@@ -1,5 +1,7 @@
 # Microservice chat application
 
+[![CircleCI](https://circleci.com/gh/kubAretip/spring-micro-websocket-chat/tree/master.svg?style=shield)](https://app.circleci.com/pipelines/github/kubAretip/spring-micro-websocket-chat)
+
 ### Repository with configuration files
 * https://github.com/kubAretip/spring-micro-websocket-chat-config
 
@@ -27,12 +29,15 @@ Requirements:
 * Install Maven, see https://maven.apache.org/download.cgi
 * Install Docker, see https://docs.docker.com/get-docker
 
-You can run application on dev profile or run in docker profile. 
+## Diagram
+<p align="center">
+  <img src="screenshot/diagram.png">
+</p>
 
 ## Steps to run in docker
 
 #### 1. Clone repository
-``` git clone git@github.com:kubAretip/spring-micro-websocket-chat.git ```
+``` git clone https://github.com/kubAretip/spring-micro-websocket-chat.git ```
 
 #### 2. Configuration time
 * In this moment repositories with configuration files is public so you must remove configuration for privates repositories.
