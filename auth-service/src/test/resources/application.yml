@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;IGNORECASE=TRUE
+    username: sa
+    password: sa
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        default_schema: auth_service_database
+    hibernate:
+      ddl-auto: create
+  flyway:
+    enabled: false
